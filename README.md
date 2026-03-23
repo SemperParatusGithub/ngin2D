@@ -1,5 +1,9 @@
 # ngin2D
 
+[![Build (Windows)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-windows.yml/badge.svg?branch=main)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-windows.yml)
+[![Build (Linux)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-linux.yml/badge.svg?branch=main)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-linux.yml)
+[![Build (macOS)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-macos.yml/badge.svg?branch=main)](https://github.com/SemperParatusGithub/ngin2D/actions/workflows/build-macos.yml)
+
 A 2D game engine written in C++23.
 
 ## Structure

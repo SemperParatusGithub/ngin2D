@@ -1,0 +1,46 @@
+name: Build (Linux)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-gcc:
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc
+      CXX: g++
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build-gcc -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build-gcc --config Release
+
+      - name: Test
+        working-directory: build-gcc
+        run: ctest --build-config Release
+
+  build-clang:
+    runs-on: ubuntu-latest
+    env:
+      CC: clang
+      CXX: clang++
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build-clang -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build-clang --config Release
+
+      - name: Test
+        working-directory: build-clang
+        run: ctest --build-config Release
