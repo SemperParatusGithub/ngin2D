@@ -4,4 +4,4 @@ add_executable(runtime
 )
 
 target_include_directories(runtime PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(runtime PRIVATE engine glfw)
+target_link_libraries(runtime PRIVATE engine glfw glad)
