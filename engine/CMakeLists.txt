@@ -32,6 +32,14 @@ add_library(engine STATIC
     src/window.cpp
     src/opengl_context.h
     src/opengl_context.cpp
+    src/graphics/shader.h
+    src/graphics/shader.cpp
+    src/graphics/vertex_buffer.h
+    src/graphics/vertex_buffer.cpp
+    src/graphics/index_buffer.h
+    src/graphics/index_buffer.cpp
+    src/graphics/graphics_pipeline.h
+    src/graphics/graphics_pipeline.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
@@ -59,6 +67,14 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/window.cpp
     src/opengl_context.h
     src/opengl_context.cpp
+    src/graphics/shader.h
+    src/graphics/shader.cpp
+    src/graphics/vertex_buffer.h
+    src/graphics/vertex_buffer.cpp
+    src/graphics/index_buffer.h
+    src/graphics/index_buffer.cpp
+    src/graphics/graphics_pipeline.h
+    src/graphics/graphics_pipeline.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp

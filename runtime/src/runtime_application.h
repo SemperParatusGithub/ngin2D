@@ -3,6 +3,8 @@
 #include "application.h"
 #include "window.h"
 #include "opengl_context.h"
+#include "graphics/shader.h"
+#include "graphics/graphics_pipeline.h"
 
 #include <memory>
 
@@ -17,7 +19,6 @@ public:
 private:
     std::unique_ptr<ngin::Window> m_window;
     std::unique_ptr<ngin::OpenGLContext> m_context;
-    unsigned int m_vao = 0;
-    unsigned int m_vbo = 0;
-    unsigned int m_shader_program = 0;
+    std::unique_ptr<ngin::Shader> m_shader;
+    std::unique_ptr<ngin::GraphicsPipeline> m_pipeline;
 };
