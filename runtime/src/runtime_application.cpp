@@ -1,6 +1,6 @@
 #include "runtime_application.h"
 
-#include "core/log.h"
+#include "engine.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -170,6 +170,8 @@ void RuntimeApplication::on_update(float) {
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
+
+    NGIN_INFO("Mouse Position: {}, {}", ngin::Input::mouse_x(), ngin::Input::mouse_y());
 }
 
 void RuntimeApplication::on_event(ngin::Event&) {
