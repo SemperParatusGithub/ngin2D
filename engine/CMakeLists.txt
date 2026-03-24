@@ -20,6 +20,10 @@ add_library(engine STATIC
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/core/build_config.h
+    src/core/types.h
+    src/core/assert.h
+    src/core/core.h
 )
 
 target_include_directories(engine PUBLIC
@@ -34,6 +38,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/core/build_config.h
+    src/core/types.h
+    src/core/assert.h
+    src/core/core.h
     third_party/glad/src/glad.c
     third_party/glad/include/glad/glad.h
     third_party/glad/include/KHR/khrplatform.h

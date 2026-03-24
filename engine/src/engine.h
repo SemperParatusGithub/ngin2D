@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform_detection.h"
+#include "core/core.h"
 #include "application.h"
 
 namespace ngin {
