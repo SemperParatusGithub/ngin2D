@@ -1,8 +1,8 @@
 #include "runtime_application.h"
 
+#include "core/log.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 namespace {
 void framebuffer_size_callback(GLFWwindow*, int width, int height) {
@@ -19,7 +19,7 @@ GLuint compile_shader(GLenum type, const char* source) {
     if (!success) {
         char info_log[512] = {};
         glGetShaderInfoLog(shader, sizeof(info_log), nullptr, info_log);
-        std::cerr << "Shader compilation failed: " << info_log << '\n';
+        NGIN_ERROR("Shader compilation failed: {}", info_log);
     }
 
     return shader;
@@ -57,7 +57,7 @@ GLuint create_triangle_program() {
     if (!success) {
         char info_log[512] = {};
         glGetProgramInfoLog(program, sizeof(info_log), nullptr, info_log);
-        std::cerr << "Program linking failed: " << info_log << '\n';
+        NGIN_ERROR("Program linking failed: {}", info_log);
     }
 
     glDeleteShader(vertex_shader);
@@ -68,7 +68,7 @@ GLuint create_triangle_program() {
 
 void RuntimeApplication::on_create() {
     if (!glfwInit()) {
-        std::cout << "Failed to initialize GLFW" << std::endl;
+        NGIN_ERROR("Failed to initialize GLFW");
         m_running = false;
         return;
     }
@@ -82,7 +82,7 @@ void RuntimeApplication::on_create() {
 
     m_window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
     if (!m_window) {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        NGIN_ERROR("Failed to create GLFW window");
         glfwTerminate();
         m_running = false;
         return;
@@ -92,7 +92,7 @@ void RuntimeApplication::on_create() {
     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        std::cerr << "Failed to initialize GLAD\n";
+        NGIN_ERROR("Failed to initialize GLAD");
         glfwDestroyWindow(m_window);
         m_window = nullptr;
         glfwTerminate();
