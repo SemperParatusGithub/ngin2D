@@ -15,6 +15,8 @@ target_include_directories(glad PUBLIC
 )
 
 add_library(engine STATIC
+    src/application.h
+    src/application.cpp
     src/engine.cpp
     src/engine.h
 )
@@ -26,6 +28,8 @@ target_include_directories(engine PUBLIC
 target_link_libraries(engine PRIVATE glfw glad)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
+    src/application.h
+    src/application.cpp
     src/engine.cpp
     src/engine.h
     third_party/glad/src/glad.c

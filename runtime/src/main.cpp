@@ -1,8 +1,7 @@
-#include "application.h"
+#include "runtime_application.h"
 
 int main() {
-    Application app;
-
+    RuntimeApplication app;
     app.run();
 
     return 0;

@@ -1,11 +1,10 @@
-#include "application.h"
+#include "runtime_application.h"
 
 #include <glad/glad.h>
-#include <iostream>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 namespace {
-
 void framebuffer_size_callback(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -65,15 +64,12 @@ GLuint create_triangle_program() {
     glDeleteShader(fragment_shader);
     return program;
 }
-
 } // namespace
 
-Application::Application() = default;
-Application::~Application() = default;
-
-void Application::run() {
+void RuntimeApplication::on_create() {
     if (!glfwInit()) {
         std::cout << "Failed to initialize GLFW" << std::endl;
+        m_running = false;
         return;
     }
 
@@ -84,26 +80,29 @@ void Application::run() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
-    if (!window) {
+    m_window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
+    if (!m_window) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
+        m_running = false;
         return;
     }
 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwMakeContextCurrent(m_window);
+    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         std::cerr << "Failed to initialize GLAD\n";
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(m_window);
+        m_window = nullptr;
         glfwTerminate();
+        m_running = false;
         return;
     }
 
     int framebuffer_width = 0;
     int framebuffer_height = 0;
-    glfwGetFramebufferSize(window, &framebuffer_width, &framebuffer_height);
+    glfwGetFramebufferSize(m_window, &framebuffer_width, &framebuffer_height);
     glViewport(0, 0, framebuffer_width, framebuffer_height);
 
     constexpr float triangle_vertices[] = {
@@ -112,40 +111,55 @@ void Application::run() {
          0.5f, -0.5f, 0.0f
     };
 
-    GLuint vao = 0;
-    GLuint vbo = 0;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
+    glGenVertexArrays(1, &m_vao);
+    glGenBuffers(1, &m_vbo);
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindVertexArray(m_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_vertices), triangle_vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
-    const GLuint shader_program = create_triangle_program();
+    m_shader_program = create_triangle_program();
+}
 
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+void RuntimeApplication::on_destroy() {
+    glDeleteProgram(m_shader_program);
+    glDeleteVertexArrays(1, &m_vao);
+    glDeleteBuffers(1, &m_vbo);
 
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
+    glfwDestroyWindow(m_window);
+    m_window = nullptr;
 
-        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+    glfwTerminate();
+}
 
-        glUseProgram(shader_program);
-        glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glfwSwapBuffers(window);
+void RuntimeApplication::on_update(float) {
+    if (!m_window) {
+        m_running = false;
+        return;
     }
 
-    glDeleteProgram(shader_program);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
+    glfwPollEvents();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+    }
+
+    if (glfwWindowShouldClose(m_window)) {
+        m_running = false;
+        return;
+    }
+
+    glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(m_shader_program);
+    glBindVertexArray(m_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glfwSwapBuffers(m_window);
+}
+
+void RuntimeApplication::on_event(ngin::Event&) {
 }
