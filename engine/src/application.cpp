@@ -6,7 +6,7 @@
 namespace ngin {
 static Application* s_application_instance = nullptr;
 
-Application::Application() : m_running(false), m_window(nullptr) {
+Application::Application() : m_running(false), m_native_window_handle(nullptr) {
     ngin::log::init();
     NGIN_INFO("Starting application on platform: {}", ngin::platform_name());
     s_application_instance = this;

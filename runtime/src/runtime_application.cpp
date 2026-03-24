@@ -66,6 +66,12 @@ GLuint create_triangle_program() {
 }
 } // namespace
 
+namespace {
+GLFWwindow* runtime_window(ngin::Application* app) {
+    return static_cast<GLFWwindow*>(app->get_native_window_handle());
+}
+} // namespace
+
 void RuntimeApplication::on_create() {
     if (!glfwInit()) {
         NGIN_ERROR("Failed to initialize GLFW");
@@ -80,21 +86,22 @@ void RuntimeApplication::on_create() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
 
-    m_window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
-    if (!m_window) {
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
+    if (!window) {
         NGIN_ERROR("Failed to create GLFW window");
         glfwTerminate();
         m_running = false;
         return;
     }
+    set_native_window_handle(window);
 
-    glfwMakeContextCurrent(m_window);
-    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         NGIN_ERROR("Failed to initialize GLAD");
-        glfwDestroyWindow(m_window);
-        m_window = nullptr;
+        glfwDestroyWindow(window);
+        set_native_window_handle(nullptr);
         glfwTerminate();
         m_running = false;
         return;
@@ -102,7 +109,7 @@ void RuntimeApplication::on_create() {
 
     int framebuffer_width = 0;
     int framebuffer_height = 0;
-    glfwGetFramebufferSize(m_window, &framebuffer_width, &framebuffer_height);
+    glfwGetFramebufferSize(window, &framebuffer_width, &framebuffer_height);
     glViewport(0, 0, framebuffer_width, framebuffer_height);
 
     constexpr float triangle_vertices[] = {
@@ -128,25 +135,29 @@ void RuntimeApplication::on_destroy() {
     glDeleteVertexArrays(1, &m_vao);
     glDeleteBuffers(1, &m_vbo);
 
-    glfwDestroyWindow(m_window);
-    m_window = nullptr;
+    GLFWwindow* window = runtime_window(this);
+    if (window) {
+        glfwDestroyWindow(window);
+        set_native_window_handle(nullptr);
+    }
 
     glfwTerminate();
 }
 
 void RuntimeApplication::on_update(float) {
-    if (!m_window) {
+    GLFWwindow* window = runtime_window(this);
+    if (!window) {
         m_running = false;
         return;
     }
 
     glfwPollEvents();
 
-    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
-    if (glfwWindowShouldClose(m_window)) {
+    if (glfwWindowShouldClose(window)) {
         m_running = false;
         return;
     }
@@ -158,7 +169,7 @@ void RuntimeApplication::on_update(float) {
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glfwSwapBuffers(m_window);
+    glfwSwapBuffers(window);
 }
 
 void RuntimeApplication::on_event(ngin::Event&) {

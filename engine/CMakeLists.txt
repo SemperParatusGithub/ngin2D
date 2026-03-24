@@ -28,6 +28,9 @@ add_library(engine STATIC
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/key_codes.h
+    src/input.h
+    src/input.cpp
     src/core/build_config.h
     src/core/types.h
     src/core/log.h
@@ -48,6 +51,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/key_codes.h
+    src/input.h
+    src/input.cpp
     src/core/build_config.h
     src/core/types.h
     src/core/log.h
