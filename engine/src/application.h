@@ -3,6 +3,7 @@
 namespace ngin {
 	struct Event {};
 }
+struct GLFWwindow;
 
 namespace ngin {
 	class Application {
@@ -19,11 +20,11 @@ namespace ngin {
 		void run();
 
 		static Application* get_instance();
-		void* get_native_window_handle() const { return m_native_window_handle; }
+		GLFWwindow* get_native_window_handle() const { return m_native_window_handle; }
 
 	protected:
-		void set_native_window_handle(void* handle) { m_native_window_handle = handle; }
+		void set_native_window_handle(GLFWwindow* handle) { m_native_window_handle = handle; }
 		bool m_running;
-		void* m_native_window_handle;
+		GLFWwindow* m_native_window_handle;
 	};
 }

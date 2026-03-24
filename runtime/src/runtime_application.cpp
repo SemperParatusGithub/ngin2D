@@ -68,49 +68,30 @@ GLuint create_triangle_program() {
 
 namespace {
 GLFWwindow* runtime_window(ngin::Application* app) {
-    return static_cast<GLFWwindow*>(app->get_native_window_handle());
+    return app->get_native_window_handle();
 }
 } // namespace
 
 void RuntimeApplication::on_create() {
-    if (!glfwInit()) {
-        NGIN_ERROR("Failed to initialize GLFW");
+    m_window = std::make_unique<ngin::Window>(1280, 720, "ngin2D Runtime");
+    if (!m_window->valid()) {
         m_running = false;
         return;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-#endif
-
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "ngin2D Runtime", nullptr, nullptr);
-    if (!window) {
-        NGIN_ERROR("Failed to create GLFW window");
-        glfwTerminate();
-        m_running = false;
-        return;
-    }
-    set_native_window_handle(window);
-
-    glfwMakeContextCurrent(window);
+    set_native_window_handle(m_window->native_handle());
+    GLFWwindow* window = runtime_window(this);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        NGIN_ERROR("Failed to initialize GLAD");
-        glfwDestroyWindow(window);
+    m_context = std::make_unique<ngin::OpenGLContext>(m_window->native_handle());
+    if (!m_context->init()) {
+        m_context.reset();
+        m_window.reset();
         set_native_window_handle(nullptr);
-        glfwTerminate();
         m_running = false;
         return;
     }
-
-    int framebuffer_width = 0;
-    int framebuffer_height = 0;
-    glfwGetFramebufferSize(window, &framebuffer_width, &framebuffer_height);
-    glViewport(0, 0, framebuffer_width, framebuffer_height);
+    m_context->set_vsync(true);
 
     constexpr float triangle_vertices[] = {
          0.0f,  0.5f, 0.0f,
@@ -131,33 +112,36 @@ void RuntimeApplication::on_create() {
 }
 
 void RuntimeApplication::on_destroy() {
-    glDeleteProgram(m_shader_program);
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
-
-    GLFWwindow* window = runtime_window(this);
-    if (window) {
-        glfwDestroyWindow(window);
-        set_native_window_handle(nullptr);
+    if (m_shader_program != 0) {
+        glDeleteProgram(m_shader_program);
+        m_shader_program = 0;
+    }
+    if (m_vao != 0) {
+        glDeleteVertexArrays(1, &m_vao);
+        m_vao = 0;
+    }
+    if (m_vbo != 0) {
+        glDeleteBuffers(1, &m_vbo);
+        m_vbo = 0;
     }
 
-    glfwTerminate();
+    set_native_window_handle(nullptr);
+    m_context.reset();
+    m_window.reset();
 }
 
 void RuntimeApplication::on_update(float) {
-    GLFWwindow* window = runtime_window(this);
-    if (!window) {
+    if (!m_window || !m_window->valid()) {
         m_running = false;
         return;
     }
 
-    glfwPollEvents();
-
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    m_window->poll_events();
+    if (ngin::Input::is_key_pressed(ngin::KeyCode::escape)) {
+        m_window->set_should_close(true);
     }
 
-    if (glfwWindowShouldClose(window)) {
+    if (m_window->should_close()) {
         m_running = false;
         return;
     }
@@ -169,9 +153,7 @@ void RuntimeApplication::on_update(float) {
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glfwSwapBuffers(window);
-
-    NGIN_INFO("Mouse Position: {}, {}", ngin::Input::mouse_x(), ngin::Input::mouse_y());
+    m_window->swap_buffers();
 }
 
 void RuntimeApplication::on_event(ngin::Event&) {

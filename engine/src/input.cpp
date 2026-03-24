@@ -18,7 +18,7 @@ bool Input::is_key_pressed(i32 key) {
         return false;
     }
 
-    GLFWwindow* window = static_cast<GLFWwindow*>(app->get_native_window_handle());
+    GLFWwindow* window = app->get_native_window_handle();
     NGIN_ASSERT_MSG(window != nullptr, "Input queried before native window handle is set (window/context not ready).");
     if (!window) {
         return false;
@@ -35,7 +35,7 @@ std::pair<f32, f32> Input::mouse_position() {
         return {0.0f, 0.0f};
     }
 
-    GLFWwindow* window = static_cast<GLFWwindow*>(app->get_native_window_handle());
+    GLFWwindow* window = app->get_native_window_handle();
     NGIN_ASSERT_MSG(window != nullptr, "Mouse queried before native window handle is set (window/context not ready).");
     if (!window) {
         return {0.0f, 0.0f};

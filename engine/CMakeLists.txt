@@ -28,6 +28,10 @@ add_library(engine STATIC
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/window.h
+    src/window.cpp
+    src/opengl_context.h
+    src/opengl_context.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
@@ -51,6 +55,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
+    src/window.h
+    src/window.cpp
+    src/opengl_context.h
+    src/opengl_context.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
