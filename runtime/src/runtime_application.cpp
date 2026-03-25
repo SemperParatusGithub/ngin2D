@@ -36,7 +36,7 @@ const char* event_type_to_string(ngin::EventType type) {
 } // namespace
 
 void RuntimeApplication::on_create() {
-    m_window = std::make_unique<ngin::Window>(1280, 720, "ngin2D Runtime");
+    m_window = ngin::create_scope<ngin::Window>(1280, 720, "ngin2D Runtime");
     if (!m_window->valid()) {
         m_running = false;
         return;
@@ -44,7 +44,7 @@ void RuntimeApplication::on_create() {
 
     set_native_window_handle(m_window->native_handle());
 
-    m_context = std::make_unique<ngin::OpenGLContext>(m_window->native_handle());
+    m_context = ngin::create_scope<ngin::OpenGLContext>(m_window->native_handle());
     if (!m_context->init()) {
         m_context.reset();
         m_window.reset();
@@ -66,7 +66,7 @@ void RuntimeApplication::on_create() {
             {"a_position", ngin::VertexFormat::float3, false}
         }
     };
-    m_pipeline = std::make_unique<ngin::GraphicsPipeline>(
+    m_pipeline = ngin::create_scope<ngin::GraphicsPipeline>(
         std::span<const ngin::f32>(triangle_vertices),
         std::span<const ngin::u32>(triangle_indices),
         layout
@@ -88,7 +88,7 @@ void RuntimeApplication::on_create() {
             FragColor = vec4(1.0, 0.4, 0.2, 1.0);
         }
     )";
-    m_shader = std::make_unique<ngin::Shader>(vertex_source, fragment_source);
+    m_shader = ngin::create_scope<ngin::Shader>(vertex_source, fragment_source);
     if (m_shader->id() == 0) {
         NGIN_ERROR("Failed to create runtime shader");
         m_running = false;

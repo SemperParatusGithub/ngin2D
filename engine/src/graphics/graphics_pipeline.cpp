@@ -73,20 +73,20 @@ GraphicsPipeline::GraphicsPipeline(
     Layout layout
 )
     : GraphicsPipeline(
-          std::make_shared<VertexBuffer>(vertex_bytes.data(), static_cast<u32>(vertex_bytes.size_bytes())),
-          std::make_shared<IndexBuffer>(indices.data(), static_cast<u32>(indices.size())),
+          create_ref<VertexBuffer>(vertex_bytes.data(), static_cast<u32>(vertex_bytes.size_bytes())),
+          create_ref<IndexBuffer>(indices.data(), static_cast<u32>(indices.size())),
           layout
       ) {
     NGIN_ASSERT_MSG(!vertex_bytes.empty(), "GraphicsPipeline requires vertex byte data.");
     NGIN_ASSERT_MSG(!indices.empty(), "GraphicsPipeline requires index data.");
 }
 
-GraphicsPipeline::GraphicsPipeline(const std::shared_ptr<VertexBuffer>& vertex_buffer, Layout layout)
-    : GraphicsPipeline(vertex_buffer, std::shared_ptr<IndexBuffer>{}, layout) {}
+GraphicsPipeline::GraphicsPipeline(const ref<VertexBuffer>& vertex_buffer, Layout layout)
+    : GraphicsPipeline(vertex_buffer, ref<IndexBuffer>{}, layout) {}
 
 GraphicsPipeline::GraphicsPipeline(
-    const std::shared_ptr<VertexBuffer>& vertex_buffer,
-    const std::shared_ptr<IndexBuffer>& index_buffer,
+    const ref<VertexBuffer>& vertex_buffer,
+    const ref<IndexBuffer>& index_buffer,
     Layout layout
 )
     : vertex_buffer(vertex_buffer),

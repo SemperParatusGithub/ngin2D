@@ -6,7 +6,6 @@
 
 #include <cstddef>
 #include <initializer_list>
-#include <memory>
 #include <span>
 #include <string>
 #include <utility>
@@ -41,8 +40,8 @@ public:
     };
 
     GraphicsPipeline(
-        const std::shared_ptr<VertexBuffer>& vertex_buffer,
-        const std::shared_ptr<IndexBuffer>& index_buffer,
+        const ref<VertexBuffer>& vertex_buffer,
+        const ref<IndexBuffer>& index_buffer,
         Layout layout
     );
     GraphicsPipeline(
@@ -50,7 +49,7 @@ public:
         std::span<const u32> indices,
         Layout layout = {}
     );
-    GraphicsPipeline(const std::shared_ptr<VertexBuffer>& vertex_buffer, Layout layout);
+    GraphicsPipeline(const ref<VertexBuffer>& vertex_buffer, Layout layout);
     template <typename VertexT>
     GraphicsPipeline(
         std::span<const VertexT> vertices,
@@ -79,8 +78,8 @@ public:
     void bind() const;
     void unbind() const;
 
-    std::shared_ptr<VertexBuffer> vertex_buffer;
-    std::shared_ptr<IndexBuffer> index_buffer;
+    ref<VertexBuffer> vertex_buffer;
+    ref<IndexBuffer> index_buffer;
     Layout layout;
 
 private:

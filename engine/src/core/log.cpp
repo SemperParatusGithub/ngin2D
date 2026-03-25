@@ -1,14 +1,14 @@
 #include "log.h"
 
 #include "build_config.h"
+#include "types.h"
 
-#include <memory>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace ngin::log {
 namespace {
-std::shared_ptr<spdlog::logger> s_core_logger;
+ref<spdlog::logger> s_core_logger;
 } // namespace
 
 void init() {

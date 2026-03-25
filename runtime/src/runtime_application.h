@@ -6,8 +6,6 @@
 #include "graphics/shader.h"
 #include "graphics/graphics_pipeline.h"
 
-#include <memory>
-
 class RuntimeApplication : public ngin::Application {
 public:
     void on_create() override;
@@ -15,8 +13,8 @@ public:
     void on_update(float delta_time) override;
 
 private:
-    std::unique_ptr<ngin::Window> m_window;
-    std::unique_ptr<ngin::OpenGLContext> m_context;
-    std::unique_ptr<ngin::Shader> m_shader;
-    std::unique_ptr<ngin::GraphicsPipeline> m_pipeline;
+    ngin::scope<ngin::Window> m_window;
+    ngin::scope<ngin::OpenGLContext> m_context;
+    ngin::scope<ngin::Shader> m_shader;
+    ngin::scope<ngin::GraphicsPipeline> m_pipeline;
 };
