@@ -6,34 +6,6 @@
 #include <optional>
 #include <span>
 
-namespace {
-const char* event_type_to_string(ngin::EventType type) {
-    switch (type) {
-        case ngin::EventType::none: return "none";
-        case ngin::EventType::window_close: return "window_close";
-        case ngin::EventType::window_resize: return "window_resize";
-        case ngin::EventType::window_move: return "window_move";
-        case ngin::EventType::window_refresh: return "window_refresh";
-        case ngin::EventType::window_focus: return "window_focus";
-        case ngin::EventType::window_iconify: return "window_iconify";
-        case ngin::EventType::window_maximize: return "window_maximize";
-        case ngin::EventType::window_framebuffer_resize: return "window_framebuffer_resize";
-        case ngin::EventType::window_content_scale: return "window_content_scale";
-        case ngin::EventType::key_pressed: return "key_pressed";
-        case ngin::EventType::key_released: return "key_released";
-        case ngin::EventType::key_repeated: return "key_repeated";
-        case ngin::EventType::character: return "character";
-        case ngin::EventType::character_mods: return "character_mods";
-        case ngin::EventType::mouse_button_pressed: return "mouse_button_pressed";
-        case ngin::EventType::mouse_button_released: return "mouse_button_released";
-        case ngin::EventType::mouse_move: return "mouse_move";
-        case ngin::EventType::mouse_enter: return "mouse_enter";
-        case ngin::EventType::mouse_scroll: return "mouse_scroll";
-        case ngin::EventType::file_drop: return "file_drop";
-        default: return "unknown";
-    }
-}
-} // namespace
 
 void RuntimeApplication::on_create() {
     m_window = ngin::create_scope<ngin::Window>(1280, 720, "ngin2D Runtime");
