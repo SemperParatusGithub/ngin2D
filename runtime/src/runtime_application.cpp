@@ -2,13 +2,36 @@
 
 #include "engine.h"
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <array>
+#include <optional>
 #include <span>
 
 namespace {
-void framebuffer_size_callback(GLFWwindow*, int width, int height) {
-    glViewport(0, 0, width, height);
+const char* event_type_to_string(ngin::EventType type) {
+    switch (type) {
+        case ngin::EventType::none: return "none";
+        case ngin::EventType::window_close: return "window_close";
+        case ngin::EventType::window_resize: return "window_resize";
+        case ngin::EventType::window_move: return "window_move";
+        case ngin::EventType::window_refresh: return "window_refresh";
+        case ngin::EventType::window_focus: return "window_focus";
+        case ngin::EventType::window_iconify: return "window_iconify";
+        case ngin::EventType::window_maximize: return "window_maximize";
+        case ngin::EventType::window_framebuffer_resize: return "window_framebuffer_resize";
+        case ngin::EventType::window_content_scale: return "window_content_scale";
+        case ngin::EventType::key_pressed: return "key_pressed";
+        case ngin::EventType::key_released: return "key_released";
+        case ngin::EventType::key_repeated: return "key_repeated";
+        case ngin::EventType::character: return "character";
+        case ngin::EventType::character_mods: return "character_mods";
+        case ngin::EventType::mouse_button_pressed: return "mouse_button_pressed";
+        case ngin::EventType::mouse_button_released: return "mouse_button_released";
+        case ngin::EventType::mouse_move: return "mouse_move";
+        case ngin::EventType::mouse_enter: return "mouse_enter";
+        case ngin::EventType::mouse_scroll: return "mouse_scroll";
+        case ngin::EventType::file_drop: return "file_drop";
+        default: return "unknown";
+    }
 }
 } // namespace
 
@@ -20,8 +43,6 @@ void RuntimeApplication::on_create() {
     }
 
     set_native_window_handle(m_window->native_handle());
-    GLFWwindow* window = m_window->native_handle();
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     m_context = std::make_unique<ngin::OpenGLContext>(m_window->native_handle());
     if (!m_context->init()) {
@@ -90,14 +111,16 @@ void RuntimeApplication::on_update(float) {
         return;
     }
 
-    m_window->poll_events();
-    if (ngin::Input::is_key_pressed(ngin::KeyCode::escape)) {
-        m_window->set_should_close(true);
-    }
+    while (const std::optional event = m_window->poll_event()) {
+        if (event->is_type<ngin::WindowClose>()) {
+            NGIN_TRACE("window close event received");
+            m_running = false;
+            break;
+        }
 
-    if (m_window->should_close()) {
-        m_running = false;
-        return;
+        if (const auto e = event->get_if<ngin::WindowResize>()) {
+            NGIN_TRACE("window resized: {}x{}", e->width, e->height);
+        }
     }
 
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
@@ -113,7 +136,4 @@ void RuntimeApplication::on_update(float) {
     );
 
     m_window->swap_buffers();
-}
-
-void RuntimeApplication::on_event(ngin::Event&) {
 }

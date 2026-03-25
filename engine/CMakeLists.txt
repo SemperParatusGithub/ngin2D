@@ -25,6 +25,7 @@ target_include_directories(glad PUBLIC
 add_library(engine STATIC
     src/application.h
     src/application.cpp
+    src/event.h
     src/engine.cpp
     src/engine.h
     src/platform_detection.h
@@ -60,6 +61,7 @@ target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/application.h
     src/application.cpp
+    src/event.h
     src/engine.cpp
     src/engine.h
     src/platform_detection.h

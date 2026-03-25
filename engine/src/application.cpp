@@ -22,8 +22,6 @@ void Application::run() {
     on_create();
 
     while (m_running) {
-        Event e {};
-        on_event(e);
         on_update(0.0f);
     }
 

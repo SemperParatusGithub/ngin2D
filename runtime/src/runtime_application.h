@@ -12,9 +12,7 @@ class RuntimeApplication : public ngin::Application {
 public:
     void on_create() override;
     void on_destroy() override;
-
     void on_update(float delta_time) override;
-    void on_event(ngin::Event& e) override;
 
 private:
     std::unique_ptr<ngin::Window> m_window;

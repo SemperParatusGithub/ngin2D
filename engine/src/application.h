@@ -1,8 +1,5 @@
 #pragma once
 
-namespace ngin {
-	struct Event {};
-}
 struct GLFWwindow;
 
 namespace ngin {
@@ -15,7 +12,6 @@ namespace ngin {
 		virtual void on_destroy() = 0;
 
 		virtual void on_update(float delta_time) = 0;
-		virtual void on_event(Event& e) = 0;
 
 		void run();
 
