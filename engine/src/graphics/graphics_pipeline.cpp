@@ -68,74 +68,31 @@ u32 GraphicsPipeline::Layout::CalculateOffset(const Attribute& attribute) const 
 }
 
 GraphicsPipeline::GraphicsPipeline(
-    std::span<const std::byte> vertex_bytes,
-    std::span<const u32> indices,
-    Layout layout
-)
-    : GraphicsPipeline(
-          create_ref<VertexBuffer>(vertex_bytes.data(), static_cast<u32>(vertex_bytes.size_bytes())),
-          create_ref<IndexBuffer>(indices.data(), static_cast<u32>(indices.size())),
-          layout
-      ) {
-    NGIN_ASSERT_MSG(!vertex_bytes.empty(), "GraphicsPipeline requires vertex byte data.");
-    NGIN_ASSERT_MSG(!indices.empty(), "GraphicsPipeline requires index data.");
+	ref<VertexBuffer> vertex_buffer,
+	ref<IndexBuffer> index_buffer,
+	const Layout& layout
+) : 
+    m_vertex_buffer(std::move(vertex_buffer)),
+	m_index_buffer(std::move(index_buffer)),
+	m_layout(layout),
+	m_vertex_array(0) {
+    setup_pipeline();
 }
 
-GraphicsPipeline::GraphicsPipeline(const ref<VertexBuffer>& vertex_buffer, Layout layout)
-    : GraphicsPipeline(vertex_buffer, ref<IndexBuffer>{}, layout) {}
-
 GraphicsPipeline::GraphicsPipeline(
-    const ref<VertexBuffer>& vertex_buffer,
-    const ref<IndexBuffer>& index_buffer,
-    Layout layout
-)
-    : vertex_buffer(vertex_buffer),
-      index_buffer(index_buffer),
-      layout(std::move(layout)),
-      m_vertex_array(0) {
-    NGIN_ASSERT_MSG(this->vertex_buffer != nullptr, "GraphicsPipeline requires a valid vertex buffer.");
+    std::span<const std::byte> vertex_bytes,
+    std::span<const u32> indices,
+    const Layout& layout
+) {
+	NGIN_ASSERT_MSG(!vertex_bytes.empty(), "GraphicsPipeline requires vertex byte data.");
+	NGIN_ASSERT_MSG(!indices.empty(), "GraphicsPipeline requires index data.");
 
-    glGenVertexArrays(1, &m_vertex_array);
-    glBindVertexArray(m_vertex_array);
+    m_vertex_array = 0;
+    m_vertex_buffer = create_ref<VertexBuffer>(vertex_bytes.data(), static_cast<u32>(vertex_bytes.size_bytes()));
+    m_index_buffer = create_ref<IndexBuffer>(indices.data(), static_cast<u32>(indices.size()));
+    m_layout = layout;
 
-    if (this->vertex_buffer) {
-        this->vertex_buffer->bind();
-
-        for (std::size_t i = 0; i < this->layout.attributes.size(); ++i) {
-            const auto& attribute = this->layout.attributes[i];
-            const GLint component_count = vertex_format_component_count(attribute.format);
-            const GLenum gl_type = vertex_format_gl_type(attribute.format);
-            NGIN_ASSERT_MSG(component_count > 0, "Invalid vertex format in pipeline layout.");
-            NGIN_ASSERT_MSG(gl_type != 0, "Invalid OpenGL vertex attribute type.");
-
-            glEnableVertexAttribArray(static_cast<GLuint>(i));
-            glVertexAttribPointer(
-                static_cast<GLuint>(i),
-                component_count,
-                gl_type,
-                attribute.normalized ? GL_TRUE : GL_FALSE,
-                static_cast<GLsizei>(this->layout.CalculateStride()),
-                reinterpret_cast<void*>(
-                    static_cast<uintptr_t>(this->layout.CalculateOffset(attribute))
-                )
-            );
-
-            NGIN_TRACE("---------------------------------------------------------");
-            NGIN_TRACE("Index: {}", i);
-            NGIN_TRACE("Count: {}", component_count);
-            NGIN_TRACE("Type: {}", gl_type == GL_FLOAT ? "float" : "other");
-            NGIN_TRACE("Normalized: {}", attribute.normalized ? 1 : 0);
-            NGIN_TRACE("Stride: {}", this->layout.CalculateStride());
-            NGIN_TRACE("Offset: {}", this->layout.CalculateOffset(attribute));
-        }
-        NGIN_TRACE("---------------------------------------------------------");
-    }
-
-    if (this->index_buffer) {
-        this->index_buffer->bind();
-    }
-
-    glBindVertexArray(0);
+    setup_pipeline();
 }
 
 GraphicsPipeline::~GraphicsPipeline() {
@@ -143,6 +100,52 @@ GraphicsPipeline::~GraphicsPipeline() {
         glDeleteVertexArrays(1, &m_vertex_array);
         m_vertex_array = 0;
     }
+}
+
+void GraphicsPipeline::setup_pipeline() {
+	NGIN_ASSERT_MSG(m_vertex_buffer, "GraphicsPipeline requires a valid vertex buffer.");
+
+	glGenVertexArrays(1, &m_vertex_array);
+	glBindVertexArray(m_vertex_array);
+
+	if (m_vertex_buffer) {
+		m_vertex_buffer->bind();
+
+		for (std::size_t i = 0; i < m_layout.attributes.size(); ++i) {
+			const auto& attribute = m_layout.attributes[i];
+			const GLint component_count = vertex_format_component_count(attribute.format);
+			const GLenum gl_type = vertex_format_gl_type(attribute.format);
+			NGIN_ASSERT_MSG(component_count > 0, "Invalid vertex format in pipeline layout.");
+			NGIN_ASSERT_MSG(gl_type != 0, "Invalid OpenGL vertex attribute type.");
+
+			glEnableVertexAttribArray(static_cast<GLuint>(i));
+			glVertexAttribPointer(
+				static_cast<GLuint>(i),
+				component_count,
+				gl_type,
+				attribute.normalized ? GL_TRUE : GL_FALSE,
+				static_cast<GLsizei>(m_layout.CalculateStride()),
+				reinterpret_cast<void*>(
+					static_cast<uintptr_t>(m_layout.CalculateOffset(attribute))
+					)
+			);
+
+			NGIN_TRACE("---------------------------------------------------------");
+			NGIN_TRACE("Index: {}", i);
+			NGIN_TRACE("Count: {}", component_count);
+			NGIN_TRACE("Type: {}", gl_type == GL_FLOAT ? "float" : "other");
+			NGIN_TRACE("Normalized: {}", attribute.normalized ? 1 : 0);
+			NGIN_TRACE("Stride: {}", m_layout.CalculateStride());
+			NGIN_TRACE("Offset: {}", m_layout.CalculateOffset(attribute));
+		}
+		NGIN_TRACE("---------------------------------------------------------");
+	}
+
+	if (m_index_buffer) {
+		m_index_buffer->bind();
+	}
+
+	glBindVertexArray(0);
 }
 
 void GraphicsPipeline::bind() const {

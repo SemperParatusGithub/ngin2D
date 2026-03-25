@@ -39,35 +39,44 @@ public:
         u32 CalculateOffset(const Attribute& attribute) const;
     };
 
-    GraphicsPipeline(
-        const ref<VertexBuffer>& vertex_buffer,
-        const ref<IndexBuffer>& index_buffer,
-        Layout layout
-    );
+	GraphicsPipeline(
+		ref<VertexBuffer> vertex_buffer,
+		ref<IndexBuffer> index_buffer,
+        const Layout& layout
+	);
     GraphicsPipeline(
         std::span<const std::byte> vertex_bytes,
         std::span<const u32> indices,
-        Layout layout = {}
+        const Layout& layout
     );
-    GraphicsPipeline(const ref<VertexBuffer>& vertex_buffer, Layout layout);
+
     template <typename VertexT>
     GraphicsPipeline(
         std::span<const VertexT> vertices,
         std::span<const u32> indices,
         Layout layout = {}
-    )
-        : GraphicsPipeline(
-              std::as_bytes(vertices),
-              indices,
-              ValidateLayoutForVertex(
-                  std::move(layout),
-                  static_cast<u32>(sizeof(VertexT)),
-                  static_cast<u32>(vertices.size_bytes())
-              )
-          ) {
+    ) {
         NGIN_ASSERT_MSG(!vertices.empty(), "GraphicsPipeline requires at least one vertex.");
         NGIN_ASSERT_MSG(!indices.empty(), "GraphicsPipeline requires at least one index.");
+
+        const Layout validated_layout = ValidateLayoutForVertex(
+            std::move(layout),
+            static_cast<u32>(sizeof(VertexT)),
+            static_cast<u32>(vertices.size_bytes())
+        );
+
+        m_vertex_array = 0;
+        m_vertex_buffer = create_ref<VertexBuffer>(
+            std::as_bytes(vertices).data(),
+            static_cast<u32>(vertices.size_bytes())
+        );
+        m_index_buffer =
+            create_ref<IndexBuffer>(indices.data(), static_cast<u32>(indices.size()));
+        m_layout = validated_layout;
+
+        setup_pipeline();
     }
+
     ~GraphicsPipeline();
 
     GraphicsPipeline(const GraphicsPipeline&) = delete;
@@ -75,12 +84,17 @@ public:
     GraphicsPipeline(GraphicsPipeline&& other) = delete;
     GraphicsPipeline& operator=(GraphicsPipeline&& other) = delete;
 
+    void setup_pipeline();
+
     void bind() const;
     void unbind() const;
 
-    ref<VertexBuffer> vertex_buffer;
-    ref<IndexBuffer> index_buffer;
-    Layout layout;
+    u32 get_index_count() const { return m_index_buffer->count(); }
+
+private:
+    ref<VertexBuffer> m_vertex_buffer;
+    ref<IndexBuffer> m_index_buffer;
+    Layout m_layout;
 
 private:
     static Layout ValidateLayoutForVertex(Layout layout, u32 vertex_element_size, u32 vertex_buffer_size) {

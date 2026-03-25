@@ -130,7 +130,7 @@ void RuntimeApplication::on_update(ngin::time_stamp) {
     m_pipeline->bind();
     glDrawElements(
         GL_TRIANGLES,
-        static_cast<GLsizei>(m_pipeline->index_buffer->count()),
+        static_cast<GLsizei>(m_pipeline->get_index_count()),
         GL_UNSIGNED_INT,
         nullptr
     );
