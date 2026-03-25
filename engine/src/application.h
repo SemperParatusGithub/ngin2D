@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/types.h"
+
 struct GLFWwindow;
 
 namespace ngin {
@@ -11,7 +13,7 @@ namespace ngin {
 		virtual void on_create() = 0;
 		virtual void on_destroy() = 0;
 
-		virtual void on_update(float delta_time) = 0;
+		virtual void on_update(time_stamp delta_time) = 0;
 
 		void run();
 

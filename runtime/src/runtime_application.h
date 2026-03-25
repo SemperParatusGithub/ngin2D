@@ -10,7 +10,7 @@ class RuntimeApplication : public ngin::Application {
 public:
     void on_create() override;
     void on_destroy() override;
-    void on_update(float delta_time) override;
+    void on_update(ngin::time_stamp delta_time) override;
 
 private:
     ngin::scope<ngin::Window> m_window;

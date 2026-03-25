@@ -105,7 +105,7 @@ void RuntimeApplication::on_destroy() {
     m_window.reset();
 }
 
-void RuntimeApplication::on_update(float) {
+void RuntimeApplication::on_update(ngin::time_stamp) {
     if (!m_window || !m_window->valid()) {
         m_running = false;
         return;
