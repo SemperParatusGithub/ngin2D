@@ -1,5 +1,6 @@
 #include "window.h"
 
+#include "core/build_config.h"
 #include "core/log.h"
 
 #include <GLFW/glfw3.h>
@@ -42,6 +43,9 @@ Window::Window(u32 width, u32 height, std::string_view title) : m_window_handle(
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#if NGIN_DEBUG
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
