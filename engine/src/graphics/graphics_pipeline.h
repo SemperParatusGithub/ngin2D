@@ -116,7 +116,7 @@ private:
         return layout;
     }
 
-    RendererID m_vertex_array;
+    renderer_id m_vertex_array;
 };
 
 } // namespace ngin

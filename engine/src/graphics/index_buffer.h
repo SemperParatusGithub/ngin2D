@@ -18,11 +18,11 @@ public:
     void bind() const;
     void unbind() const;
 
-    RendererID id() const { return m_renderer_id; }
+    renderer_id id() const { return m_renderer_id; }
     u32 count() const { return m_count; }
 
 private:
-    RendererID m_renderer_id;
+    renderer_id m_renderer_id;
     u32 m_count;
 };
 

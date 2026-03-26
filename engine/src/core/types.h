@@ -19,7 +19,7 @@ using f32 = float;
 using f64 = double;
 using time_stamp = f32;
 
-using RendererID = u32;
+using renderer_id = u32;
 
 template <typename T>
 using scope = std::unique_ptr<T>;

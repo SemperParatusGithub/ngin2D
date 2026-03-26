@@ -36,12 +36,12 @@ public:
     void bind() const;
     void unbind() const;
 
-    RendererID id() const { return m_renderer_id; }
+    renderer_id id() const { return m_renderer_id; }
 
 private:
     i32 get_uniform_location(std::string_view name) const;
 
-    RendererID m_renderer_id;
+    renderer_id m_renderer_id;
 };
 
 } // namespace ngin
