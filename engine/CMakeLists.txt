@@ -11,6 +11,7 @@ set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 set(SPDLOG_FMT_EXTERNAL OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(third_party/spdlog)
+add_subdirectory(third_party/glm)
 
 add_library(glad STATIC
     third_party/glad/src/glad.c
@@ -41,6 +42,10 @@ add_library(engine STATIC
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/Transform.h
+    src/Transform.cpp
+    src/camera.h
+    src/camera.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
@@ -57,6 +62,8 @@ target_include_directories(engine PUBLIC
 )
 
 target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
+target_link_libraries(engine PUBLIC glm::glm)
+target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/application.h
@@ -77,6 +84,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/Transform.h
+    src/Transform.cpp
+    src/camera.h
+    src/camera.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp

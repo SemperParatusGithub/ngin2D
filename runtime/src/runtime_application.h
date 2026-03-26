@@ -3,6 +3,7 @@
 #include "application.h"
 #include "window.h"
 #include "opengl_context.h"
+#include "camera.h"
 #include "graphics/shader.h"
 #include "graphics/graphics_pipeline.h"
 
@@ -17,4 +18,5 @@ private:
     ngin::scope<ngin::OpenGLContext> m_context;
     ngin::scope<ngin::Shader> m_shader;
     ngin::scope<ngin::GraphicsPipeline> m_pipeline;
+    ngin::scope<ngin::Camera> m_camera;
 };
