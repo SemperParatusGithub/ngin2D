@@ -15,16 +15,10 @@ Camera::Camera(
 ) :
 	m_position(position),
 	m_rotation(rotation),
-	m_zoom(zoom)
+	m_zoom(zoom),
+	m_viewport_width(viewport_width),
+	m_viewport_height(viewport_height)
 {
-	m_projection = glm::ortho(
-		0.0f,
-		static_cast<f32>(viewport_width),
-		0.0f,
-		static_cast<f32>(viewport_height),
-		-1.0f,
-		1.0f
-	);
 	recalculate_matrices();
 }
 Camera::~Camera()
@@ -60,14 +54,8 @@ f32 Camera::get_zoom() const {
 }
 
 void Camera::set_viewport(u32 viewport_width, u32 viewport_height) {
-	m_projection = glm::ortho(
-		0.0f,
-		static_cast<f32>(viewport_width),
-		0.0f,
-		static_cast<f32>(viewport_height),
-		-1.0f,
-		1.0f
-	);
+	m_viewport_width = viewport_width;
+	m_viewport_height = viewport_height;
 	recalculate_matrices();
 }
 
@@ -100,6 +88,20 @@ const glm::mat4& Camera::get_projection_view_matrix() const {
 }
 
 void Camera::recalculate_matrices() {
+	const f32 half_width = static_cast<f32>(m_viewport_width) * 0.5f;
+	const f32 half_height = static_cast<f32>(m_viewport_height) * 0.5f;
+	const f32 zoomed_half_width = half_width / m_zoom;
+	const f32 zoomed_half_height = half_height / m_zoom;
+
+	m_projection = glm::ortho(
+		-zoomed_half_width,
+		zoomed_half_width,
+		-zoomed_half_height,
+		zoomed_half_height,
+		-1.0f,
+		1.0f
+	);
+
 	glm::mat4 transform(1.0f);
 
 	transform = glm::translate(
@@ -111,11 +113,6 @@ void Camera::recalculate_matrices() {
 		transform,
 		m_rotation,
 		glm::vec3(0, 0, 1)
-	);
-
-	transform = glm::scale(
-		transform,
-		glm::vec3(m_zoom, m_zoom, 1.0f)
 	);
 
 	m_view = glm::inverse(transform);

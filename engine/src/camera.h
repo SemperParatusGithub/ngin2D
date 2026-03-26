@@ -41,6 +41,8 @@ private:
 	glm::vec2 m_position;
 	f32 m_rotation;
 	f32 m_zoom;
+	u32 m_viewport_width;
+	u32 m_viewport_height;
 
 	glm::mat4 m_projection;
 	glm::mat4 m_view;
