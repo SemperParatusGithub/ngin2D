@@ -42,6 +42,8 @@ add_library(engine STATIC
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/Transform.h
+    src/Transform.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
@@ -59,6 +61,7 @@ target_include_directories(engine PUBLIC
 
 target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
 target_link_libraries(engine PUBLIC glm::glm)
+target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/application.h
@@ -79,6 +82,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/Transform.h
+    src/Transform.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
