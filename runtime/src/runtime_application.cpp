@@ -3,6 +3,7 @@
 #include "engine.h"
 #include <glad/glad.h>
 #include <array>
+#include <filesystem>
 #include <optional>
 #include <span>
 
@@ -44,25 +45,13 @@ void RuntimeApplication::on_create() {
         layout
     );
 
-    constexpr std::string_view vertex_source = R"(
-        #version 330 core
-        layout (location = 0) in vec3 a_position;
-
-        void main() {
-            gl_Position = vec4(a_position, 1.0);
-        }
-    )";
-    constexpr std::string_view fragment_source = R"(
-        #version 330 core
-        out vec4 FragColor;
-
-        void main() {
-            FragColor = vec4(1.0, 0.4, 0.2, 1.0);
-        }
-    )";
-    m_shader = ngin::create_scope<ngin::Shader>(vertex_source, fragment_source);
-    if (m_shader->id() == 0) {
-        NGIN_ERROR("Failed to create runtime shader");
+    m_shader = ngin::create_scope<ngin::Shader>();
+    bool shader_loaded = m_shader->load_from_files(
+        std::filesystem::path("assets/shaders/triangle.vert"),
+        std::filesystem::path("assets/shaders/triangle.frag")
+    );
+    if (!shader_loaded || m_shader->id() == 0) {
+        NGIN_ERROR("Failed to load runtime shader files");
         m_running = false;
         return;
     }
