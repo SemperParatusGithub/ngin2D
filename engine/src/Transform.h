@@ -24,9 +24,14 @@ public:
 	const glm::mat4& get_transformation_matrix() const;
 
 private:
+	void recalculate_matrices();
+
+private:
 	glm::vec3 m_position;
 	glm::vec3 m_rotation;
 	glm::vec3 m_scale;
+
+	glm::mat4 m_transformation_matrix;
 };
 
 } // namespace ngin
