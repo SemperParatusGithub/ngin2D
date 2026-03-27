@@ -11,6 +11,7 @@
 #include "graphics/vertex_buffer.h"
 #include "graphics/index_buffer.h"
 #include "graphics/graphics_pipeline.h"
+#include "graphics/texture.h"
 
 namespace ngin {
 } // namespace ngin

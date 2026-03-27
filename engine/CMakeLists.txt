@@ -36,6 +36,8 @@ add_library(engine STATIC
     src/opengl_context.cpp
     src/graphics/shader.h
     src/graphics/shader.cpp
+    src/graphics/texture.h
+    src/graphics/texture.cpp
     src/graphics/vertex_buffer.h
     src/graphics/vertex_buffer.cpp
     src/graphics/index_buffer.h
@@ -78,6 +80,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/opengl_context.cpp
     src/graphics/shader.h
     src/graphics/shader.cpp
+    src/graphics/texture.h
+    src/graphics/texture.cpp
     src/graphics/vertex_buffer.h
     src/graphics/vertex_buffer.cpp
     src/graphics/index_buffer.h
