@@ -20,6 +20,12 @@ public:
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
 
+    bool is_valid() const { return m_renderer_id != 0; }
+    renderer_id get_id() const { return m_renderer_id; }
+
+	void bind() const;
+	void unbind() const;
+
     bool load_from_source(std::string_view vertex_source, std::string_view fragment_source);
     bool load_from_files(
         const std::filesystem::path& vertex_path,
@@ -32,11 +38,6 @@ public:
     void set_uniform_vec3(std::string_view name, const glm::vec3& value) const;
     void set_uniform_vec4(std::string_view name, const glm::vec4& value) const;
     void set_uniform_mat4(std::string_view name, const glm::mat4& value) const;
-
-    void bind() const;
-    void unbind() const;
-
-    renderer_id id() const { return m_renderer_id; }
 
 private:
     i32 get_uniform_location(std::string_view name) const;

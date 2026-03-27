@@ -51,7 +51,7 @@ void RuntimeApplication::on_create() {
         std::filesystem::path("assets/shaders/triangle.vert"),
         std::filesystem::path("assets/shaders/triangle.frag")
     );
-    if (!shader_loaded || m_shader->id() == 0) {
+    if (!shader_loaded || !m_shader->is_valid()) {
         NGIN_ERROR("Failed to load runtime shader files");
         m_running = false;
         return;

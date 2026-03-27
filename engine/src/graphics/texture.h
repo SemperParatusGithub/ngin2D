@@ -35,21 +35,21 @@ public:
     Texture(Texture&& other) noexcept;
     Texture& operator=(Texture&& other) noexcept;
 
-    bool valid() const { return m_renderer_id != 0; }
+    bool is_valid() const { return m_renderer_id != 0; }
+	renderer_id get_id() const { return m_renderer_id; }
 
-    bool load_from_file(
+    void bind(u32 slot = 0) const;
+    void unbind(u32 slot = 0) const;
+
+	bool load_from_file(
 		const std::filesystem::path& path,
 		texture_wrap wrap = texture_wrap::clamp_to_edge,
 		texture_filter filter = texture_filter::linear,
 		bool flip_vertically_on_load = true
-    );
+	);
 
-    void bind(u32 slot = 0) const;
-
-    renderer_id id() const { return m_renderer_id; }
-
-    u32 width() const { return m_width; }
-    u32 height() const { return m_height; }
+    u32 get_width() const { return m_width; }
+    u32 get_height() const { return m_height; }
 
 private:
     void release();

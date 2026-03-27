@@ -75,6 +75,18 @@ void Texture::release() {
     }
 }
 
+void Texture::bind(u32 slot) const {
+	NGIN_ASSERT_MSG(is_valid(), "Trying to bind an invalid texture.");
+	glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(slot));
+	glBindTexture(GL_TEXTURE_2D, m_renderer_id);
+}
+
+void Texture::unbind(u32 slot) const {
+	NGIN_ASSERT_MSG(is_valid(), "Trying to unbind an invalid texture.");
+	glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(slot));
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 bool Texture::load_from_file(
 	const std::filesystem::path& path,
 	texture_wrap wrap,
@@ -130,12 +142,6 @@ bool Texture::load_from_file(
     stbi_image_free(data);
 
     return true;
-}
-
-void Texture::bind(u32 slot) const {
-    NGIN_ASSERT_MSG(valid(), "Trying to bind an invalid texture.");
-    glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(slot));
-    glBindTexture(GL_TEXTURE_2D, m_renderer_id);
 }
 
 } // namespace ngin

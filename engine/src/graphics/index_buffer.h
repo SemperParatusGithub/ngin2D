@@ -15,11 +15,13 @@ public:
     IndexBuffer(IndexBuffer&& other) noexcept;
     IndexBuffer& operator=(IndexBuffer&& other) noexcept;
 
+    bool is_valid() const { return m_renderer_id != 0; }
+	renderer_id get_id() const { return m_renderer_id; }
+
     void bind() const;
     void unbind() const;
 
-    renderer_id id() const { return m_renderer_id; }
-    u32 count() const { return m_count; }
+    u32 get_count() const { return m_count; }
 
 private:
     renderer_id m_renderer_id;

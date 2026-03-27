@@ -15,10 +15,11 @@ public:
     VertexBuffer(VertexBuffer&& other) noexcept;
     VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
+    bool is_valid() const { return m_renderer_id != 0; }
+    renderer_id get_id() const { return m_renderer_id; }
+
     void bind() const;
     void unbind() const;
-
-    renderer_id id() const { return m_renderer_id; }
 
 private:
     renderer_id m_renderer_id;
