@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "graphics/shader.h"
 #include "graphics/graphics_pipeline.h"
+#include "graphics/texture.h"
 
 class RuntimeApplication : public ngin::Application {
 public:
@@ -18,5 +19,6 @@ private:
     ngin::scope<ngin::OpenGLContext> m_context;
     ngin::scope<ngin::Shader> m_shader;
     ngin::scope<ngin::GraphicsPipeline> m_pipeline;
+    ngin::scope<ngin::Texture> m_texture;
     ngin::scope<ngin::Camera> m_camera;
 };

@@ -28,21 +28,24 @@ void RuntimeApplication::on_create() {
     }
     m_context->set_vsync(true);
 
-    constexpr std::array<ngin::f32, 9> triangle_vertices = {
-        640.0f, 420.0f, 0.0f,
-        560.0f, 300.0f, 0.0f,
-        720.0f, 300.0f, 0.0f
+    constexpr std::array<ngin::f32, 20> quad_vertices = {
+        // x, y, z, u, v
+        560.0f, 420.0f, 0.0f, 0.0f, 1.0f, // top-left
+        720.0f, 420.0f, 0.0f, 1.0f, 1.0f, // top-right
+        720.0f, 300.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+        560.0f, 300.0f, 0.0f, 0.0f, 0.0f  // bottom-left
     };
-    constexpr std::array<ngin::u32, 3> triangle_indices = {0, 1, 2};
+    constexpr std::array<ngin::u32, 6> quad_indices = {0, 1, 2, 2, 3, 0};
 
     ngin::GraphicsPipeline::Layout layout = {
         {
-            {"a_position", ngin::VertexFormat::float3, false}
+            {"a_position", ngin::VertexFormat::float3, false},
+            {"a_tex_coord", ngin::VertexFormat::float2, false}
         }
     };
     m_pipeline = ngin::create_scope<ngin::GraphicsPipeline>(
-        std::span<const ngin::f32>(triangle_vertices),
-        std::span<const ngin::u32>(triangle_indices),
+        std::span<const ngin::f32>(quad_vertices),
+        std::span<const ngin::u32>(quad_indices),
         layout
     );
 
@@ -53,6 +56,16 @@ void RuntimeApplication::on_create() {
     );
     if (!shader_loaded || !m_shader->is_valid()) {
         NGIN_ERROR("Failed to load runtime shader files");
+        m_running = false;
+        return;
+    }
+
+    m_texture = ngin::create_scope<ngin::Texture>();
+    const bool texture_loaded = m_texture->load_from_file(
+        std::filesystem::path("assets/textures/wall.jpg")
+    );
+    if (!texture_loaded || !m_texture->is_valid()) {
+        NGIN_ERROR("Failed to load runtime texture");
         m_running = false;
         return;
     }
@@ -68,6 +81,7 @@ void RuntimeApplication::on_create() {
 void RuntimeApplication::on_destroy() {
     m_pipeline.reset();
     m_shader.reset();
+    m_texture.reset();
     m_camera.reset();
 
     set_native_window_handle(nullptr);
@@ -127,6 +141,8 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
 
     m_shader->bind();
     m_shader->set_uniform_mat4("u_view_projection", m_camera->get_projection_view_matrix());
+    m_texture->bind(0);
+    m_shader->set_uniform_i32("u_texture", 0);
     m_pipeline->bind();
     glDrawElements(
         GL_TRIANGLES,
