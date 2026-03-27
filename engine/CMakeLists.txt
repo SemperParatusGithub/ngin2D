@@ -44,8 +44,8 @@ add_library(engine STATIC
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
-    src/Transform.h
-    src/Transform.cpp
+    src/transform.h
+    src/transform.cpp
     src/camera.h
     src/camera.cpp
     src/key_codes.h
@@ -88,8 +88,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/index_buffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
-    src/Transform.h
-    src/Transform.cpp
+    src/transform.h
+    src/transform.cpp
     src/camera.h
     src/camera.cpp
     src/key_codes.h
