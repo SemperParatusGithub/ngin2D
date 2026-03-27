@@ -4,6 +4,7 @@
 namespace ngin {
 
 Sprite::Sprite() {
+	recalculate_texture_coords();
 }
 
 Sprite::Sprite(ref<Texture> texture) : 
