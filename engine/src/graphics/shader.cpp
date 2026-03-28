@@ -111,6 +111,14 @@ Shader& Shader::operator=(Shader&& other) noexcept {
     return *this;
 }
 
+void Shader::bind() const {
+	glUseProgram(m_renderer_id);
+}
+
+void Shader::unbind() const {
+	glUseProgram(0);
+}
+
 bool Shader::load_from_source(std::string_view vertex_source, std::string_view fragment_source) {
     const GLuint new_program = create_program(vertex_source, fragment_source);
     if (new_program == 0) {
@@ -194,14 +202,6 @@ void Shader::set_uniform_mat4(std::string_view name, const glm::mat4& value) con
     if (location >= 0) {
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
-}
-
-void Shader::bind() const {
-    glUseProgram(m_renderer_id);
-}
-
-void Shader::unbind() const {
-    glUseProgram(0);
 }
 
 } // namespace ngin

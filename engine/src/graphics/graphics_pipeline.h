@@ -35,8 +35,8 @@ public:
 
         std::vector<Attribute> attributes;
 
-        u32 CalculateStride() const;
-        u32 CalculateOffset(const Attribute& attribute) const;
+        u32 calculate_stride() const;
+        u32 calculate_offset(const Attribute& attribute) const;
     };
 
 	GraphicsPipeline(
@@ -81,15 +81,18 @@ public:
 
     GraphicsPipeline(const GraphicsPipeline&) = delete;
     GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
-    GraphicsPipeline(GraphicsPipeline&& other) = delete;
-    GraphicsPipeline& operator=(GraphicsPipeline&& other) = delete;
+    GraphicsPipeline(GraphicsPipeline&& other) noexcept;
+    GraphicsPipeline& operator=(GraphicsPipeline&& other) noexcept;
 
     void setup_pipeline();
+
+    bool is_valid() const { return m_vertex_array != 0; }
+    renderer_id get_id() const { return m_vertex_array; }
 
     void bind() const;
     void unbind() const;
 
-    u32 get_index_count() const { return m_index_buffer->count(); }
+    u32 get_index_count() const;
 
 private:
     ref<VertexBuffer> m_vertex_buffer;
@@ -99,7 +102,7 @@ private:
 private:
     static Layout ValidateLayoutForVertex(Layout layout, u32 vertex_element_size, u32 vertex_buffer_size) {
         if (!layout.attributes.empty()) {
-            const u32 stride = layout.CalculateStride();
+            const u32 stride = layout.calculate_stride();
 			NGIN_ASSERT_MSG(
 				stride >= vertex_element_size,
 				"Pipeline layout stride is smaller than vertex element size."
@@ -116,7 +119,7 @@ private:
         return layout;
     }
 
-    RendererID m_vertex_array;
+    renderer_id m_vertex_array;
 };
 
 } // namespace ngin

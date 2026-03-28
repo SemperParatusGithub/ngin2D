@@ -13,9 +13,9 @@ public:
 	void set_rotation(const glm::vec3& rotation);
 	void set_scale(const glm::vec3& scale);
 
-	void get_position(const glm::vec3& position);
-	void get_rotation(const glm::vec3& rotation);
-	void get_scale(const glm::vec3& scale);
+	const glm::vec3& get_position() const;
+	const glm::vec3& get_rotation() const;
+	const glm::vec3& get_scale() const;
 
 	void move(const glm::vec3& offset);
 	void rotate(const glm::vec3& offset);
