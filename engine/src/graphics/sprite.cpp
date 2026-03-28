@@ -22,10 +22,10 @@ void Sprite::set_texture(ref<Texture> texture) {
 }
 
 void Sprite::recalculate_texture_coords() {
-	m_texture_coords[0] = { 0.0f, 0.0f };
-	m_texture_coords[1] = { 1.0f, 0.0f };
-	m_texture_coords[2] = { 1.0f, 1.0f };
-	m_texture_coords[3] = { 0.0f, 1.0f };
+	m_texture_coords[0] = {0.0f, 1.0f};
+	m_texture_coords[1] = {1.0f, 1.0f};
+	m_texture_coords[2] = {1.0f, 0.0f};
+	m_texture_coords[3] = {0.0f, 0.0f};
 }
 
 } // namespace ngin

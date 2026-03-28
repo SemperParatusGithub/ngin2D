@@ -1,12 +1,6 @@
 #pragma once
 
-#include "application.h"
-#include "window.h"
-#include "opengl_context.h"
-#include "camera.h"
-#include "graphics/shader.h"
-#include "graphics/graphics_pipeline.h"
-#include "graphics/texture.h"
+#include "engine.h"
 
 class RuntimeApplication : public ngin::Application {
 public:
@@ -17,8 +11,8 @@ public:
 private:
     ngin::scope<ngin::Window> m_window;
     ngin::scope<ngin::OpenGLContext> m_context;
-    ngin::scope<ngin::Shader> m_shader;
-    ngin::scope<ngin::GraphicsPipeline> m_pipeline;
-    ngin::scope<ngin::Texture> m_texture;
-    ngin::scope<ngin::Camera> m_camera;
+
+    ngin::ref<ngin::Texture> m_texture;
+    ngin::ref<ngin::Sprite> m_demo_sprite;
+    ngin::ref<ngin::Camera> m_camera;
 };

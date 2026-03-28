@@ -1,4 +1,4 @@
-#include "Transform.h"
+#include "transform.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -12,6 +12,8 @@ Transform::Transform() :
 	m_scale(glm::vec3(1.0f)) {
 		recalculate_matrices();
 	}
+
+Transform::~Transform() = default;
 
 void Transform::set_position(const glm::vec3& position) {
 	m_position = position;
@@ -61,4 +63,4 @@ const glm::mat4& Transform::get_transformation_matrix() const {
 	return m_transformation_matrix;
 }
 
-} // namespace engine
+} // namespace ngin

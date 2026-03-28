@@ -7,11 +7,16 @@
 #include "input.h"
 #include "window.h"
 #include "opengl_context.h"
+#include "transform.h"
+#include "camera.h"
+
 #include "graphics/shader.h"
 #include "graphics/vertex_buffer.h"
 #include "graphics/index_buffer.h"
 #include "graphics/graphics_pipeline.h"
 #include "graphics/texture.h"
+#include "graphics/sprite.h"
+#include "graphics/renderer.h"
 
 namespace ngin {
 } // namespace ngin

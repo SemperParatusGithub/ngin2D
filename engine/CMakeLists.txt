@@ -40,6 +40,8 @@ add_library(engine STATIC
     src/graphics/texture.cpp
     src/graphics/sprite.h
     src/graphics/sprite.cpp
+    src/graphics/renderer.h
+    src/graphics/renderer.cpp
     src/graphics/vertex_buffer.h
     src/graphics/vertex_buffer.cpp
     src/graphics/index_buffer.h
@@ -69,6 +71,19 @@ target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
 target_link_libraries(engine PUBLIC glm::glm)
 target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
+# GLSL sources live under engine/assets/shaders (not compiled; listed for IDE visibility).
+set(ENGINE_SHADER_ASSETS
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/triangle.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/triangle.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/quad.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/quad.frag
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/circle.vert
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/circle.frag
+)
+target_sources(engine PRIVATE ${ENGINE_SHADER_ASSETS})
+set_source_files_properties(${ENGINE_SHADER_ASSETS} PROPERTIES HEADER_FILE_ONLY TRUE)
+source_group("assets/shaders" FILES ${ENGINE_SHADER_ASSETS})
+
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/application.h
     src/application.cpp
@@ -86,6 +101,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/texture.cpp
     src/graphics/sprite.h
     src/graphics/sprite.cpp
+    src/graphics/renderer.h
+    src/graphics/renderer.cpp
     src/graphics/vertex_buffer.h
     src/graphics/vertex_buffer.cpp
     src/graphics/index_buffer.h
