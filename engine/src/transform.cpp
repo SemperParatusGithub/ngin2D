@@ -26,14 +26,14 @@ void Transform::set_scale(const glm::vec3& scale) {
 	recalculate_matrices();
 }
 
-void Transform::get_position(const glm::vec3& position) {
-	m_position = position;
+const glm::vec3& Transform::get_position() {
+	return m_position;
 }
-void Transform::get_rotation(const glm::vec3& rotation) {
-	m_rotation = rotation;
+const glm::vec3& Transform::get_rotation() {
+	return m_rotation;
 }
-void Transform::get_scale(const glm::vec3& scale) {
-	m_scale = scale;
+const glm::vec3& Transform::get_scale() {
+	return m_scale;
 }
 
 void Transform::move(const glm::vec3& offset) {
