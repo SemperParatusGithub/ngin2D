@@ -2,10 +2,11 @@
 
 #include "core/assert.h"
 #include "core/log.h"
+#include "graphics/framebuffer.h"
 #include "graphics/sprite.h"
 #include "graphics/texture.h"
 
-#include "camera.h"
+#include "graphics/camera.h"
 #include "transform.h"
 
 #include <array>
@@ -255,6 +256,66 @@ void Renderer::submit_quad_with_texture(const Transform& transform, const ref<Te
     s_render_data->quad_shader->set_uniform_vec4("u_tint", tint);
 
     texture->bind(0);
+    s_render_data->quad_shader->set_uniform_i32("u_texture", 0);
+
+    draw_indexed(s_render_data->quad_pipeline);
+}
+
+void Renderer::submit_quad_with_framebuffer(
+    const Transform& transform,
+    const Framebuffer& framebuffer,
+    u32 color_attachment_index,
+    const glm::vec4& tint
+) {
+    NGIN_ASSERT_MSG(s_render_data, "Renderer not initialized.");
+    NGIN_ASSERT_MSG(framebuffer.is_valid(), "Invalid framebuffer.");
+    NGIN_ASSERT_MSG(s_render_data->quad_shader && s_render_data->quad_shader->is_valid(), "Quad shader not loaded.");
+    NGIN_ASSERT_MSG(s_render_data->quad_pipeline, "Quad pipeline missing.");
+
+    const renderer_id tex_id = framebuffer.get_color_attachment_id(color_attachment_index);
+    NGIN_ASSERT_MSG(tex_id != 0, "Framebuffer has no color attachment at the given index.");
+
+    s_render_data->quad_shader->bind();
+    s_render_data->quad_shader->set_uniform_mat4("u_model", transform.get_transformation_matrix());
+    s_render_data->quad_shader->set_uniform_mat4("u_view_projection", projection_view_matrix());
+    s_render_data->quad_shader->set_uniform_i32("u_use_sprite_uvs", 0);
+    s_render_data->quad_shader->set_uniform_i32("u_use_texture", 1);
+    s_render_data->quad_shader->set_uniform_vec4("u_color", glm::vec4(1.0f));
+    s_render_data->quad_shader->set_uniform_vec4("u_tint", tint);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    s_render_data->quad_shader->set_uniform_i32("u_texture", 0);
+
+    draw_indexed(s_render_data->quad_pipeline);
+}
+
+void Renderer::submit_framebuffer_fullscreen(
+    const Framebuffer& framebuffer,
+    u32 color_attachment_index,
+    const glm::vec4& tint
+) {
+    NGIN_ASSERT_MSG(s_render_data, "Renderer not initialized.");
+    NGIN_ASSERT_MSG(framebuffer.is_valid(), "Invalid framebuffer.");
+    NGIN_ASSERT_MSG(s_render_data->quad_shader && s_render_data->quad_shader->is_valid(), "Quad shader not loaded.");
+    NGIN_ASSERT_MSG(s_render_data->quad_pipeline, "Quad pipeline missing.");
+
+    const renderer_id tex_id = framebuffer.get_color_attachment_id(color_attachment_index);
+    NGIN_ASSERT_MSG(tex_id != 0, "Framebuffer has no color attachment at the given index.");
+
+    Transform ndc_quad;
+    ndc_quad.set_scale(glm::vec3(2.0f, 2.0f, 1.0f));
+
+    s_render_data->quad_shader->bind();
+    s_render_data->quad_shader->set_uniform_mat4("u_model", ndc_quad.get_transformation_matrix());
+    s_render_data->quad_shader->set_uniform_mat4("u_view_projection", glm::mat4(1.0f));
+    s_render_data->quad_shader->set_uniform_i32("u_use_sprite_uvs", 0);
+    s_render_data->quad_shader->set_uniform_i32("u_use_texture", 1);
+    s_render_data->quad_shader->set_uniform_vec4("u_color", glm::vec4(1.0f));
+    s_render_data->quad_shader->set_uniform_vec4("u_tint", tint);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
     s_render_data->quad_shader->set_uniform_i32("u_texture", 0);
 
     draw_indexed(s_render_data->quad_pipeline);

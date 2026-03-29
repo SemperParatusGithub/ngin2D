@@ -15,6 +15,16 @@ Sprite::Sprite(ref<Texture> texture) :
 Sprite::~Sprite() {
 }
 
+void Sprite::set_position(const glm::vec3& position) {
+	m_transform.set_position(position);
+}
+void Sprite::set_rotation(const glm::vec3& rotation) {
+	m_transform.set_rotation(rotation);
+}
+void Sprite::set_scale(const glm::vec3& scale) {
+	m_transform.set_scale(scale);
+}
+
 void Sprite::set_texture(ref<Texture> texture) {
 	m_texture = texture;
 

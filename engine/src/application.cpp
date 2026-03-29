@@ -1,7 +1,7 @@
 #include "application.h"
 
 #include "core/log.h"
-#include "platform_detection.h"
+#include "core/platform_detection.h"
 
 #include <GLFW/glfw3.h>
 
@@ -30,6 +30,7 @@ void Application::run() {
         previous_time = current_time;
 
         on_update(delta_time);
+        on_render();
     }
 
     on_destroy();

@@ -1,4 +1,4 @@
-#include "opengl_context.h"
+#include "graphics/opengl_context.h"
 
 #include "core/build_config.h"
 #include "core/log.h"
