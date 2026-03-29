@@ -12,6 +12,7 @@ class Sprite;
 class Transform;
 class Texture;
 class Camera;
+class Framebuffer;
 
 class Renderer {
 public:
@@ -47,6 +48,19 @@ public:
     static void submit_quad_with_texture(
         const Transform& transform,
         const ref<Texture>& texture,
+        const glm::vec4& tint = glm::vec4(1.0f)
+    );
+    /// Samples a framebuffer color attachment (`GL_TEXTURE_2D`) on the quad shader path.
+    static void submit_quad_with_framebuffer(
+        const Transform& transform,
+        const Framebuffer& framebuffer,
+        u32 color_attachment_index = 0,
+        const glm::vec4& tint = glm::vec4(1.0f)
+    );
+    /// Fullscreen pass in NDC: ignores the active camera so the FBO is not transformed twice.
+    static void submit_framebuffer_fullscreen(
+        const Framebuffer& framebuffer,
+        u32 color_attachment_index = 0,
         const glm::vec4& tint = glm::vec4(1.0f)
     );
     static void submit_sprite(const ref<Sprite>& sprite);

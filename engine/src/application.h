@@ -14,6 +14,7 @@ namespace ngin {
 		virtual void on_destroy() = 0;
 
 		virtual void on_update(time_stamp delta_time) = 0;
+		virtual void on_render() = 0;
 
 		void run();
 

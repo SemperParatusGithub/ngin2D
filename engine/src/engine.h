@@ -17,6 +17,7 @@
 #include "graphics/texture.h"
 #include "graphics/sprite.h"
 #include "graphics/renderer.h"
+#include "graphics/framebuffer.h"
 
 namespace ngin {
 } // namespace ngin

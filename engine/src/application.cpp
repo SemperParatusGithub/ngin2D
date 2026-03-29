@@ -30,6 +30,7 @@ void Application::run() {
         previous_time = current_time;
 
         on_update(delta_time);
+        on_render();
     }
 
     on_destroy();
