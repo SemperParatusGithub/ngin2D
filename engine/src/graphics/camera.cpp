@@ -1,4 +1,4 @@
-#include "camera.h"
+#include "graphics/camera.h"
 
 #include "core/assert.h"
 

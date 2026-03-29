@@ -29,11 +29,10 @@ add_library(engine STATIC
     src/event.h
     src/engine.cpp
     src/engine.h
-    src/platform_detection.h
     src/window.h
     src/window.cpp
-    src/opengl_context.h
-    src/opengl_context.cpp
+    src/graphics/opengl_context.h
+    src/graphics/opengl_context.cpp
     src/graphics/shader.h
     src/graphics/shader.cpp
     src/graphics/texture.h
@@ -50,14 +49,15 @@ add_library(engine STATIC
     src/graphics/framebuffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/graphics/camera.h
+    src/graphics/camera.cpp
     src/transform.h
     src/transform.cpp
-    src/camera.h
-    src/camera.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
     src/core/build_config.h
+    src/core/platform_detection.h
     src/core/types.h
     src/core/log.h
     src/core/log.cpp
@@ -92,11 +92,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event.h
     src/engine.cpp
     src/engine.h
-    src/platform_detection.h
     src/window.h
     src/window.cpp
-    src/opengl_context.h
-    src/opengl_context.cpp
+    src/graphics/opengl_context.h
+    src/graphics/opengl_context.cpp
     src/graphics/shader.h
     src/graphics/shader.cpp
     src/graphics/texture.h
@@ -113,14 +112,15 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/framebuffer.cpp
     src/graphics/graphics_pipeline.h
     src/graphics/graphics_pipeline.cpp
+    src/graphics/camera.h
+    src/graphics/camera.cpp
     src/transform.h
     src/transform.cpp
-    src/camera.h
-    src/camera.cpp
     src/key_codes.h
     src/input.h
     src/input.cpp
     src/core/build_config.h
+    src/core/platform_detection.h
     src/core/types.h
     src/core/log.h
     src/core/log.cpp

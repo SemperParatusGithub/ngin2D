@@ -6,7 +6,7 @@
 #include "graphics/sprite.h"
 #include "graphics/texture.h"
 
-#include "camera.h"
+#include "graphics/camera.h"
 #include "transform.h"
 
 #include <array>

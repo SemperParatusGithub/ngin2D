@@ -1,7 +1,7 @@
 #include "application.h"
 
 #include "core/log.h"
-#include "platform_detection.h"
+#include "core/platform_detection.h"
 
 #include <GLFW/glfw3.h>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../platform_detection.h"
+#include "platform_detection.h"
 
 // Build configuration macros.
 #if defined(NDEBUG)
