@@ -231,12 +231,11 @@ Window::~Window() {
     }
 }
 
-std::span<const Event> Window::poll_events() {
+void Window::poll_events() {
     if (m_event_queue) {
         m_event_queue->clear();
     }
     glfwPollEvents();
-    return event_buffer();
 }
 
 std::optional<Event> Window::poll_event() {
@@ -248,13 +247,6 @@ std::optional<Event> Window::poll_event() {
     }
 
     return m_event_queue->pop_next();
-}
-
-std::span<const Event> Window::event_buffer() const {
-    if (!m_event_queue) {
-        return {};
-    }
-    return m_event_queue->events();
 }
 
 void Window::clear_event_buffer() {

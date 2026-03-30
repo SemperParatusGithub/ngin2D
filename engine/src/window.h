@@ -5,7 +5,6 @@
 #include "event_queue.h"
 
 #include <optional>
-#include <span>
 #include <string_view>
 
 struct GLFWwindow;
@@ -21,9 +20,7 @@ public:
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    std::span<const Event> poll_events();
     std::optional<Event> poll_event();
-    std::span<const Event> event_buffer() const;
     void clear_event_buffer();
     void swap_buffers() const;
 
@@ -34,6 +31,7 @@ public:
     bool valid() const;
 
 private:
+    void poll_events();
     void set_event_callbacks();
     static Window* from_glfw(GLFWwindow* glfw_window);
     static void push_glfw_event(GLFWwindow* glfw_window, Event event);
