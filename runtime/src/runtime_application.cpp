@@ -100,26 +100,7 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
     }
 
     while (const std::optional event = m_window->poll_event()) {
-        if (event->is_type<ngin::WindowClose>()) {
-            NGIN_TRACE("window close event received");
-            m_running = false;
-            break;
-        }
-
-        if (const auto e = event->get_if<ngin::WindowResize>()) {
-            NGIN_TRACE("window resized: {}x{}", e->width, e->height);
-            if (e->width > 0 && e->height > 0) {
-                m_viewport_width = static_cast<ngin::u32>(e->width);
-                m_viewport_height = static_cast<ngin::u32>(e->height);
-                m_camera->set_viewport(m_viewport_width, m_viewport_height);
-            }
-        }
-
-        if (const auto e = event->get_if<ngin::MouseScroll>()) {
-            constexpr ngin::f32 zoom_base = 1.1f;
-            const ngin::f32 zoom_factor = std::pow(zoom_base, e->y_offset);
-            m_camera->zoom(zoom_factor);
-        }
+        on_event(event);
     }
 
     constexpr ngin::f32 camera_speed = 700.0f;
@@ -136,6 +117,28 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
     if (ngin::Input::is_key_pressed(ngin::KeyCode::d)) {
         m_camera->move({move_delta, 0.0f});
     }
+}
+void RuntimeApplication::on_event(std::optional<ngin::Event> event) {
+	if (event->is_type<ngin::WindowClose>()) {
+		NGIN_TRACE("window close event received");
+		m_running = false;
+		return;
+	}
+
+	if (const auto e = event->get_if<ngin::WindowResize>()) {
+		NGIN_TRACE("window resized: {}x{}", e->width, e->height);
+		if (e->width > 0 && e->height > 0) {
+			m_viewport_width = static_cast<ngin::u32>(e->width);
+			m_viewport_height = static_cast<ngin::u32>(e->height);
+			m_camera->set_viewport(m_viewport_width, m_viewport_height);
+		}
+	}
+
+	if (const auto e = event->get_if<ngin::MouseScroll>()) {
+		constexpr ngin::f32 zoom_base = 1.1f;
+		const ngin::f32 zoom_factor = std::pow(zoom_base, e->y_offset);
+		m_camera->zoom(zoom_factor);
+	}
 }
 
 void RuntimeApplication::on_render() {

@@ -14,7 +14,9 @@ public:
 private:
     void on_create();
     void on_destroy();
+
     void on_update(ngin::time_stamp delta_time);
+    void on_event(std::optional<ngin::Event> event);
     void on_render();
 
 private:
