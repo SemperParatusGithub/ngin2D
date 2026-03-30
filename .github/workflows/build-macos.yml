@@ -18,8 +18,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Qt 6
+        run: brew install qt
+
       - name: Configure CMake
-        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DQT6_PREFIX_PATH="$(brew --prefix qt)"
 
       - name: Build
         run: cmake --build build --config Release
