@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFile>
 #include <QKeyEvent>
+#include <QPainterPath>
+#include <QResizeEvent>
 #include <QTimer>
 #include <QWheelEvent>
 
@@ -195,6 +197,14 @@ void EngineViewport::resizeGL(int w, int h) {
     if (m_camera) {
         m_camera->set_viewport(m_viewport_width, m_viewport_height);
     }
+}
+
+void EngineViewport::resizeEvent(QResizeEvent* event) {
+    QOpenGLWidget::resizeEvent(event);
+
+    QPainterPath clip_path;
+    clip_path.addRoundedRect(rect(), 16.0, 16.0);
+    setMask(QRegion(clip_path.toFillPolygon().toPolygon()));
 }
 
 void EngineViewport::paintGL() {
