@@ -2,8 +2,8 @@
 
 class Editor {
 public:
-    Editor();
-    ~Editor();
+    Editor() = default;
+    ~Editor() = default;
 
     void run();
 };

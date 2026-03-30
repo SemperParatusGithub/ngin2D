@@ -40,6 +40,10 @@ public:
     void bind() const;
     void unbind() const;
 
+    /// Target for `unbind()` instead of framebuffer 0. Use `QOpenGLWidget::defaultFramebufferObject()`
+    /// under Qt (non-zero FBO with `GL_COLOR_ATTACHMENT0`). Defaults to 0 (window backbuffer / GLFW).
+    static void set_default_framebuffer_binding(renderer_id fbo);
+
 	void resize(u32 width, u32 height);
 
     renderer_id get_color_attachment_id(u32 index = 0) const;
