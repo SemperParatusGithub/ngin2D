@@ -54,7 +54,7 @@ void draw_indexed(const ref<GraphicsPipeline>& pipeline) {
 
 } // namespace
 
-void Renderer::init() {
+void Renderer::initialize() {
     s_render_data = create_scope<RenderData>();
 
     constexpr std::array<f32, 20> quad_vertices = {

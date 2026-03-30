@@ -5,10 +5,15 @@
 
 #include <utility>
 
+struct GLFWwindow;
+
 namespace ngin {
 
 class Input {
 public:
+    static void initialize(GLFWwindow* window_handle);
+    static void release();
+
     static bool is_key_pressed(KeyCode key);
     static bool is_key_pressed(i32 key);
 

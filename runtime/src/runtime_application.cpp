@@ -6,6 +6,26 @@
 #include <glm/glm.hpp>
 
 
+#include <GLFW/glfw3.h>
+
+
+void RuntimeApplication::run() {
+	m_running = true;
+	on_create();
+
+	auto previous_time = static_cast<ngin::time_stamp>(glfwGetTime());
+	while (m_running) {
+		auto current_time = static_cast<ngin::time_stamp>(glfwGetTime());
+		auto delta_time = current_time - previous_time;
+		previous_time = current_time;
+
+		on_update(delta_time);
+		on_render();
+	}
+
+	on_destroy();
+}
+
 void RuntimeApplication::on_create() {
     m_window = ngin::create_scope<ngin::Window>(1280, 720, "ngin2D Runtime - renderer demo");
     if (!m_window->valid()) {
@@ -13,19 +33,18 @@ void RuntimeApplication::on_create() {
         return;
     }
 
-    set_native_window_handle(m_window->native_handle());
-
     m_context = ngin::create_scope<ngin::OpenGLContext>();
     if (!m_context->create_from_glfw(m_window->native_handle())) {
         m_context.reset();
         m_window.reset();
-        set_native_window_handle(nullptr);
         m_running = false;
         return;
     }
     m_context->set_vsync(true);
 
-    ngin::Renderer::init();
+    ngin::Input::initialize(m_window->native_handle());
+
+    ngin::Renderer::initialize();
 
     m_texture = ngin::create_ref<ngin::Texture>();
     const bool texture_loaded = m_texture->load_from_file(
@@ -59,6 +78,8 @@ void RuntimeApplication::on_create() {
 }
 
 void RuntimeApplication::on_destroy() {
+    ngin::Input::release();
+
     ngin::Renderer::remove_camera();
     ngin::Renderer::release();
 
@@ -68,7 +89,6 @@ void RuntimeApplication::on_destroy() {
     m_texture.reset();
     m_camera.reset();
 
-    set_native_window_handle(nullptr);
     m_context.reset();
     m_window.reset();
 }

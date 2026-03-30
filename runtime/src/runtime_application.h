@@ -4,14 +4,22 @@
 
 #include <optional>
 
-class RuntimeApplication : public ngin::Application {
+class RuntimeApplication {
 public:
-    void on_create() override;
-    void on_destroy() override;
-    void on_update(ngin::time_stamp delta_time) override;
-    void on_render() override;
+    RuntimeApplication() = default;
+    ~RuntimeApplication() = default;
+
+    void run();
 
 private:
+    void on_create();
+    void on_destroy();
+    void on_update(ngin::time_stamp delta_time);
+    void on_render();
+
+private:
+    bool m_running = false;
+
     ngin::scope<ngin::Window> m_window;
     ngin::scope<ngin::OpenGLContext> m_context;
 

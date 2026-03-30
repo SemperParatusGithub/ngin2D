@@ -1,8 +1,13 @@
 #include "runtime_application.h"
 
 int main() {
-    RuntimeApplication app;
-    app.run();
+    ngin::log::initialize();
+
+    RuntimeApplication* app = new RuntimeApplication();
+    app->run();
+    delete app;
+
+    ngin::log::release();
 
     return 0;
 }

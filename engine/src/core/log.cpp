@@ -11,7 +11,7 @@ namespace {
 ref<spdlog::logger> s_core_logger;
 } // namespace
 
-void init() {
+void initialize() {
     if (s_core_logger) {
         return;
     }
@@ -25,7 +25,7 @@ void init() {
 #endif
 }
 
-void shutdown() {
+void release() {
     s_core_logger.reset();
     spdlog::shutdown();
 }

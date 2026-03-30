@@ -45,7 +45,7 @@ void EngineViewport::on_create() {
     m_viewport_width = static_cast<ngin::u32>(std::max(1, width()));
     m_viewport_height = static_cast<ngin::u32>(std::max(1, height()));
 
-    ngin::Renderer::init();
+    ngin::Renderer::initialize();
 
     m_camera = ngin::create_ref<ngin::Camera>(
         m_viewport_width,
