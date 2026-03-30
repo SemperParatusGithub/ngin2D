@@ -11,6 +11,19 @@ namespace ngin {
 
 namespace {
 
+renderer_id g_unbind_target_fbo = 0;
+
+void bind_unbind_target_framebuffer() {
+    glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(g_unbind_target_fbo));
+    if (g_unbind_target_fbo == 0) {
+        glDrawBuffer(GL_BACK);
+        glReadBuffer(GL_BACK);
+    } else {
+        glDrawBuffer(GL_COLOR_ATTACHMENT0);
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+    }
+}
+
 bool is_color_format(Framebuffer::TextureFormat format) {
     switch (format) {
 		case Framebuffer::TextureFormat::rgba8:
@@ -218,8 +231,12 @@ void Framebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_renderer_id);
 }
 
+void Framebuffer::set_default_framebuffer_binding(renderer_id fbo) {
+    g_unbind_target_fbo = fbo;
+}
+
 void Framebuffer::unbind() const {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    bind_unbind_target_framebuffer();
 }
 
 renderer_id Framebuffer::get_color_attachment_id(u32 index) const {

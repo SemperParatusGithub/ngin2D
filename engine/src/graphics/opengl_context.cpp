@@ -68,7 +68,7 @@ void APIENTRY opengl_debug_callback(
     }
 }
 
-void setup_opengl_debug_output() {
+void setup_opengl_debug_output(GladLoadProc loader) {
     GLint context_flags = 0;
     glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
     if ((context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) == 0) {
@@ -76,9 +76,9 @@ void setup_opengl_debug_output() {
     }
 
     const auto debug_message_callback =
-        reinterpret_cast<GLDebugMessageCallbackProc>(glfwGetProcAddress("glDebugMessageCallback"));
+        reinterpret_cast<GLDebugMessageCallbackProc>(loader("glDebugMessageCallback"));
     const auto debug_message_control =
-        reinterpret_cast<GLDebugMessageControlProc>(glfwGetProcAddress("glDebugMessageControl"));
+        reinterpret_cast<GLDebugMessageControlProc>(loader("glDebugMessageControl"));
 
     if (!debug_message_callback || !debug_message_control) {
         NGIN_WARN("OpenGL debug callback functions are not available on this driver/context.");
@@ -93,26 +93,47 @@ void setup_opengl_debug_output() {
 }
 #endif
 
-} // namespace
-
-OpenGLContext::OpenGLContext(GLFWwindow* native_window_handle) : m_window_handle(native_window_handle) {}
-
-bool OpenGLContext::init() {
-    if (!m_window_handle) {
-        NGIN_ERROR("OpenGLContext init failed: native window handle is null.");
+bool glad_init_with_loader_impl(GladLoadProc get_proc_address, bool set_viewport_from_context) {
+    if (!get_proc_address) {
+        NGIN_ERROR("OpenGLContext: null GL loader.");
         return false;
     }
 
-    glfwMakeContextCurrent(m_window_handle);
-
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(get_proc_address))) {
         NGIN_ERROR("Failed to initialize GLAD");
         return false;
     }
 
 #if NGIN_DEBUG
-    setup_opengl_debug_output();
+    setup_opengl_debug_output(get_proc_address);
 #endif
+
+    if (set_viewport_from_context) {
+        GLint viewport[4] = {0, 0, 0, 0};
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        if (viewport[2] > 0 && viewport[3] > 0) {
+            glViewport(0, 0, viewport[2], viewport[3]);
+        }
+    }
+
+    return true;
+}
+
+} // namespace
+
+bool OpenGLContext::create_from_glfw(GLFWwindow* native_window_handle) {
+    if (!native_window_handle) {
+        NGIN_ERROR("OpenGLContext::create_from_glfw failed: native window handle is null.");
+        return false;
+    }
+
+    m_window_handle = native_window_handle;
+    m_is_external = false;
+    glfwMakeContextCurrent(m_window_handle);
+
+    if (!glad_init_with_loader_impl(reinterpret_cast<GladLoadProc>(glfwGetProcAddress), true)) {
+        return false;
+    }
 
     int framebuffer_width = 0;
     int framebuffer_height = 0;
@@ -121,7 +142,20 @@ bool OpenGLContext::init() {
     return true;
 }
 
+bool OpenGLContext::init_external(GladLoadProc get_proc_address, bool set_viewport_from_context) {
+    if (!m_is_external) {
+        NGIN_ERROR("OpenGLContext::init_external() is only for external (non-GLFW) contexts.");
+        return false;
+    }
+    return glad_init_with_loader_impl(get_proc_address, set_viewport_from_context);
+}
+
 void OpenGLContext::set_vsync(bool enabled) {
+    if (m_is_external) {
+        // Vsync for Qt is set via QSurfaceFormat::setSwapInterval on the application or surface.
+        (void)enabled;
+        return;
+    }
     glfwSwapInterval(enabled ? 1 : 0);
 }
 

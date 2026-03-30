@@ -15,8 +15,8 @@ void RuntimeApplication::on_create() {
 
     set_native_window_handle(m_window->native_handle());
 
-    m_context = ngin::create_scope<ngin::OpenGLContext>(m_window->native_handle());
-    if (!m_context->init()) {
+    m_context = ngin::create_scope<ngin::OpenGLContext>();
+    if (!m_context->create_from_glfw(m_window->native_handle())) {
         m_context.reset();
         m_window.reset();
         set_native_window_handle(nullptr);
