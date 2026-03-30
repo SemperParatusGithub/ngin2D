@@ -2,8 +2,6 @@
 
 #include "engine.h"
 
-#include <optional>
-
 class RuntimeApplication {
 public:
     RuntimeApplication() = default;
@@ -16,7 +14,7 @@ private:
     void on_destroy();
 
     void on_update(ngin::time_stamp delta_time);
-    void on_event(const std::optional<ngin::Event>& event);
+    void on_event(const ngin::Event& event);
     void on_render();
 
 private:

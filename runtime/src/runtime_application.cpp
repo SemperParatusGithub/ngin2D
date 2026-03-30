@@ -118,18 +118,14 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
         m_camera->move({move_delta, 0.0f});
     }
 }
-void RuntimeApplication::on_event(const std::optional<ngin::Event>& event) {
-    if (!event) {
-        return;
-    }
-
-	if (event->is_type<ngin::WindowClose>()) {
+void RuntimeApplication::on_event(const ngin::Event& event) {
+	if (event.is_type<ngin::WindowClose>()) {
 		NGIN_TRACE("window close event received");
 		m_running = false;
 		return;
 	}
 
-	if (const auto e = event->get_if<ngin::WindowResize>()) {
+	if (const auto e = event.get_if<ngin::WindowResize>()) {
 		NGIN_TRACE("window resized: {}x{}", e->width, e->height);
 		if (e->width > 0 && e->height > 0) {
 			m_viewport_width = static_cast<ngin::u32>(e->width);
@@ -138,7 +134,7 @@ void RuntimeApplication::on_event(const std::optional<ngin::Event>& event) {
 		}
 	}
 
-	if (const auto e = event->get_if<ngin::MouseScroll>()) {
+	if (const auto e = event.get_if<ngin::MouseScroll>()) {
 		constexpr ngin::f32 zoom_base = 1.1f;
 		const ngin::f32 zoom_factor = std::pow(zoom_base, e->y_offset);
 		m_camera->zoom(zoom_factor);
