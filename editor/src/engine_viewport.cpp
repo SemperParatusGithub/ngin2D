@@ -2,9 +2,6 @@
 
 #include "engine_viewport.h"
 
-#include <QCoreApplication>
-#include <QDir>
-#include <QFile>
 #include <QKeyEvent>
 #include <QPainterPath>
 #include <QResizeEvent>
@@ -20,6 +17,7 @@
 #include "core/log.h"
 #include "graphics/framebuffer.h"
 #include "graphics/renderer.h"
+#include "qt_input_adapter.h"
 #include "transform.h"
 
 EngineViewport::EngineViewport(QWidget* parent) : QOpenGLWidget(parent) {
@@ -93,7 +91,29 @@ void EngineViewport::on_destroy() {
     ngin::Renderer::release();
     m_gl_ctx.reset();
     m_gl_initialized = false;
+    m_event_queue.clear();
+    m_keys_held.clear();
     doneCurrent();
+}
+
+void EngineViewport::on_ngin_event(const ngin::Event& event) {
+    if (const auto pressed = event.get_if<ngin::KeyPressed>()) {
+        m_keys_held.insert(static_cast<int>(pressed->key_code));
+        return;
+    }
+    if (const auto released = event.get_if<ngin::KeyReleased>()) {
+        m_keys_held.erase(static_cast<int>(released->key_code));
+        return;
+    }
+    if (event.get_if<ngin::KeyRepeated>()) {
+        return;
+    }
+    if (const auto scroll = event.get_if<ngin::MouseScroll>()) {
+        if (m_camera) {
+            constexpr ngin::f32 zoom_base = 1.1f;
+            m_camera->zoom(std::pow(zoom_base, scroll->y_offset));
+        }
+    }
 }
 
 void EngineViewport::on_update(ngin::time_stamp delta_time) {
@@ -101,18 +121,22 @@ void EngineViewport::on_update(ngin::time_stamp delta_time) {
         return;
     }
 
+    while (const std::optional<ngin::Event> e = m_event_queue.pop_next()) {
+        on_ngin_event(*e);
+    }
+
     constexpr ngin::f32 camera_speed = 700.0f;
     const ngin::f32 move_delta = camera_speed * delta_time;
-    if (m_keys_held.contains(static_cast<int>(Qt::Key_W))) {
+    if (m_keys_held.contains(static_cast<int>(ngin::KeyCode::w))) {
         m_camera->move({0.0f, move_delta});
     }
-    if (m_keys_held.contains(static_cast<int>(Qt::Key_S))) {
+    if (m_keys_held.contains(static_cast<int>(ngin::KeyCode::s))) {
         m_camera->move({0.0f, -move_delta});
     }
-    if (m_keys_held.contains(static_cast<int>(Qt::Key_A))) {
+    if (m_keys_held.contains(static_cast<int>(ngin::KeyCode::a))) {
         m_camera->move({-move_delta, 0.0f});
     }
-    if (m_keys_held.contains(static_cast<int>(Qt::Key_D))) {
+    if (m_keys_held.contains(static_cast<int>(ngin::KeyCode::d))) {
         m_camera->move({move_delta, 0.0f});
     }
 }
@@ -219,26 +243,28 @@ void EngineViewport::paintGL() {
 }
 
 void EngineViewport::keyPressEvent(QKeyEvent* event) {
-    if (!event->isAutoRepeat()) {
-        m_keys_held.insert(event->key());
+    if (auto ev = ngin::editor::event_from_qt_key_press(event)) {
+        m_event_queue.push(std::move(*ev));
+        event->accept();
+        return;
     }
     QOpenGLWidget::keyPressEvent(event);
 }
 
 void EngineViewport::keyReleaseEvent(QKeyEvent* event) {
-    if (!event->isAutoRepeat()) {
-        m_keys_held.remove(event->key());
+    if (auto ev = ngin::editor::event_from_qt_key_release(event)) {
+        m_event_queue.push(std::move(*ev));
+        event->accept();
+        return;
     }
     QOpenGLWidget::keyReleaseEvent(event);
 }
 
 void EngineViewport::wheelEvent(QWheelEvent* event) {
-    if (!m_camera) {
+    if (auto ev = ngin::editor::event_from_qt_wheel(event)) {
+        m_event_queue.push(std::move(*ev));
+        event->accept();
         return;
     }
-    constexpr ngin::f32 zoom_base = 1.1f;
-    const ngin::f32 steps = static_cast<ngin::f32>(event->angleDelta().y()) / 120.0f;
-    const ngin::f32 zoom_factor = std::pow(zoom_base, steps);
-    m_camera->zoom(zoom_factor);
-    event->accept();
+    QOpenGLWidget::wheelEvent(event);
 }

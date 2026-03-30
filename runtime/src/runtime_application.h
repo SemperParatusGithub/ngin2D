@@ -16,12 +16,13 @@ private:
     void on_destroy();
 
     void on_update(ngin::time_stamp delta_time);
-    void on_event(std::optional<ngin::Event> event);
+    void on_event(const std::optional<ngin::Event>& event);
     void on_render();
 
 private:
     bool m_running = false;
 
+    ngin::EventQueue m_event_queue;
     ngin::scope<ngin::Window> m_window;
     ngin::scope<ngin::OpenGLContext> m_context;
 

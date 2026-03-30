@@ -27,7 +27,7 @@ void RuntimeApplication::run() {
 }
 
 void RuntimeApplication::on_create() {
-    m_window = ngin::create_scope<ngin::Window>(1280, 720, "ngin2D Runtime - renderer demo");
+    m_window = ngin::create_scope<ngin::Window>(1280, 720, "ngin2D Runtime - renderer demo", m_event_queue);
     if (!m_window->valid()) {
         m_running = false;
         return;
@@ -100,7 +100,7 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
     }
 
     while (const std::optional event = m_window->poll_event()) {
-        on_event(event);
+        on_event(*event);
     }
 
     constexpr ngin::f32 camera_speed = 700.0f;
@@ -118,7 +118,11 @@ void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
         m_camera->move({move_delta, 0.0f});
     }
 }
-void RuntimeApplication::on_event(std::optional<ngin::Event> event) {
+void RuntimeApplication::on_event(const std::optional<ngin::Event>& event) {
+    if (!event) {
+        return;
+    }
+
 	if (event->is_type<ngin::WindowClose>()) {
 		NGIN_TRACE("window close event received");
 		m_running = false;

@@ -25,6 +25,8 @@ target_include_directories(glad PUBLIC
 
 add_library(engine STATIC
     src/event.h
+    src/event_queue.h
+    src/event_queue.cpp
     src/engine.cpp
     src/engine.h
     src/window.h
@@ -86,6 +88,8 @@ source_group("assets/shaders" FILES ${ENGINE_SHADER_ASSETS})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event.h
+    src/event_queue.h
+    src/event_queue.cpp
     src/engine.cpp
     src/engine.h
     src/window.h

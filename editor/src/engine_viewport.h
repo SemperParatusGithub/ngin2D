@@ -2,9 +2,11 @@
 
 #include <QElapsedTimer>
 #include <QOpenGLWidget>
-#include <QSet>
+
+#include <unordered_set>
 
 #include "core/types.h"
+#include "event_queue.h"
 #include "graphics/camera.h"
 #include "graphics/framebuffer.h"
 #include "graphics/opengl_context.h"
@@ -34,6 +36,7 @@ private:
     void on_create();
     void on_destroy();
     void on_update(ngin::time_stamp delta_time);
+    void on_ngin_event(const ngin::Event& event);
     void on_render();
 
 private:
@@ -47,7 +50,9 @@ private:
 
     QTimer* m_tick_timer = nullptr;
     QElapsedTimer m_frame_timer;
-    QSet<int> m_keys_held;
+
+    ngin::EventQueue m_event_queue;
+    std::unordered_set<int> m_keys_held;
 
     ngin::ref<ngin::OpenGLContext> m_gl_ctx;
 };

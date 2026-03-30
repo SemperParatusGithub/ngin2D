@@ -34,7 +34,8 @@ void Window::push_glfw_event(GLFWwindow* glfw_window, Event event) {
     window->push_event(std::move(event));
 }
 
-Window::Window(u32 width, u32 height, std::string_view title) : m_window_handle(nullptr) {
+Window::Window(u32 width, u32 height, std::string_view title, EventQueue& event_queue)
+    : m_window_handle(nullptr), m_event_queue(&event_queue) {
     if (!glfwInit()) {
         NGIN_ERROR("Failed to initialize GLFW");
         return;
@@ -231,35 +232,41 @@ Window::~Window() {
 }
 
 std::span<const Event> Window::poll_events() {
-    m_event_buffer.clear();
-    m_next_event_index = 0;
+    if (m_event_queue) {
+        m_event_queue->clear();
+    }
     glfwPollEvents();
     return event_buffer();
 }
 
 std::optional<Event> Window::poll_event() {
-    if (m_next_event_index >= m_event_buffer.size()) {
+    if (!m_event_queue) {
+        return std::nullopt;
+    }
+    if (m_event_queue->exhausted()) {
         poll_events();
     }
 
-    if (m_next_event_index >= m_event_buffer.size()) {
-        return std::nullopt;
-    }
-
-    return m_event_buffer[m_next_event_index++];
+    return m_event_queue->pop_next();
 }
 
 std::span<const Event> Window::event_buffer() const {
-    return std::span<const Event>(m_event_buffer.data(), m_event_buffer.size());
+    if (!m_event_queue) {
+        return {};
+    }
+    return m_event_queue->events();
 }
 
 void Window::clear_event_buffer() {
-    m_event_buffer.clear();
-    m_next_event_index = 0;
+    if (m_event_queue) {
+        m_event_queue->clear();
+    }
 }
 
 void Window::push_event(Event event) {
-    m_event_buffer.push_back(std::move(event));
+    if (m_event_queue) {
+        m_event_queue->push(std::move(event));
+    }
 }
 
 void Window::swap_buffers() const {
