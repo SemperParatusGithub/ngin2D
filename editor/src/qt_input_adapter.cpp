@@ -19,89 +19,87 @@ ngin::KeyModifiers key_modifiers_from_qt(QEvent* event) {
 }
 
 ngin::KeyCode qt_key_to_ngin(int qt_key) {
-    using KC = ngin::KeyCode;
-
     if (qt_key >= 32 && qt_key <= 126) {
-        return static_cast<KC>(qt_key);
+        return static_cast<KeyCode>(qt_key);
     }
 
     switch (qt_key) {
     case Qt::Key_Escape:
-        return KC::escape;
+        return KeyCode::escape;
     case Qt::Key_Tab:
     case Qt::Key_Backtab:
-        return KC::tab;
+        return KeyCode::tab;
     case Qt::Key_Backspace:
-        return KC::backspace;
+        return KeyCode::backspace;
     case Qt::Key_Return:
     case Qt::Key_Enter:
-        return KC::enter;
+        return KeyCode::enter;
     case Qt::Key_Insert:
-        return KC::insert;
+        return KeyCode::insert;
     case Qt::Key_Delete:
-        return KC::del;
+        return KeyCode::del;
     case Qt::Key_Pause:
-        return KC::pause;
+        return KeyCode::pause;
     case Qt::Key_Print:
-        return KC::print_screen;
+        return KeyCode::print_screen;
     case Qt::Key_Home:
-        return KC::home;
+        return KeyCode::home;
     case Qt::Key_End:
-        return KC::end;
+        return KeyCode::end;
     case Qt::Key_PageUp:
-        return KC::page_up;
+        return KeyCode::page_up;
     case Qt::Key_PageDown:
-        return KC::page_down;
+        return KeyCode::page_down;
     case Qt::Key_Left:
-        return KC::left;
+        return KeyCode::left;
     case Qt::Key_Right:
-        return KC::right;
+        return KeyCode::right;
     case Qt::Key_Up:
-        return KC::up;
+        return KeyCode::up;
     case Qt::Key_Down:
-        return KC::down;
+        return KeyCode::down;
     case Qt::Key_Shift:
-        return KC::left_shift;
+        return KeyCode::left_shift;
     case Qt::Key_Control:
-        return KC::left_control;
+        return KeyCode::left_control;
     case Qt::Key_Alt:
-        return KC::left_alt;
+        return KeyCode::left_alt;
     case Qt::Key_Meta:
-        return KC::left_super;
+        return KeyCode::left_super;
     case Qt::Key_CapsLock:
-        return KC::caps_lock;
+        return KeyCode::caps_lock;
     case Qt::Key_NumLock:
-        return KC::num_lock;
+        return KeyCode::num_lock;
     case Qt::Key_ScrollLock:
-        return KC::scroll_lock;
+        return KeyCode::scroll_lock;
     case Qt::Key_F1:
-        return KC::f1;
+        return KeyCode::f1;
     case Qt::Key_F2:
-        return KC::f2;
+        return KeyCode::f2;
     case Qt::Key_F3:
-        return KC::f3;
+        return KeyCode::f3;
     case Qt::Key_F4:
-        return KC::f4;
+        return KeyCode::f4;
     case Qt::Key_F5:
-        return KC::f5;
+        return KeyCode::f5;
     case Qt::Key_F6:
-        return KC::f6;
+        return KeyCode::f6;
     case Qt::Key_F7:
-        return KC::f7;
+        return KeyCode::f7;
     case Qt::Key_F8:
-        return KC::f8;
+        return KeyCode::f8;
     case Qt::Key_F9:
-        return KC::f9;
+        return KeyCode::f9;
     case Qt::Key_F10:
-        return KC::f10;
+        return KeyCode::f10;
     case Qt::Key_F11:
-        return KC::f11;
+        return KeyCode::f11;
     case Qt::Key_F12:
-        return KC::f12;
+        return KeyCode::f12;
     case Qt::Key_Space:
-        return KC::space;
+        return KeyCode::space;
     default:
-        return KC::unknown;
+        return KeyCode::unknown;
     }
 }
 
