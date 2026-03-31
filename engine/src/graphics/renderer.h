@@ -16,7 +16,7 @@ class Framebuffer;
 
 class Renderer {
 public:
-    static void init();
+    static void initialize();
     static void release();
 
     static void set_clear_color(const glm::vec4& clear_color);

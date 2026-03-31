@@ -11,6 +11,8 @@ add_executable(editor
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp
+    src/qt_input_adapter.cpp
+    src/qt_input_adapter.h
     src/dashboard_theme.cpp
     src/dashboard_theme.h
 )
@@ -64,6 +66,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp
+    src/qt_input_adapter.cpp
+    src/qt_input_adapter.h
     src/dashboard_theme.cpp
     src/dashboard_theme.h
 )

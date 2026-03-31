@@ -6,7 +6,7 @@
 #include <QSurfaceFormat>
 
 int main(int argc, char* argv[]) {
-	ngin::log::init();
+	ngin::log::initialize();
 	NGIN_INFO("Initializing Log system");
 
     QSurfaceFormat format;
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     editor.run();
 
 	NGIN_INFO("Shutting Log system down");
-	ngin::log::shutdown();
+	ngin::log::release();
 
     return 0;
 }

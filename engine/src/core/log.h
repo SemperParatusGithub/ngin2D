@@ -14,8 +14,8 @@ enum class level {
     critical
 };
 
-void init();
-void shutdown();
+void initialize();
+void release();
 
 void write(level log_level, std::string_view message);
 

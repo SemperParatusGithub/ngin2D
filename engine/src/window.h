@@ -2,12 +2,10 @@
 
 #include "core/types.h"
 #include "event.h"
+#include "event_queue.h"
 
-#include <cstddef>
 #include <optional>
-#include <span>
 #include <string_view>
-#include <vector>
 
 struct GLFWwindow;
 
@@ -15,15 +13,14 @@ namespace ngin {
 
 class Window {
 public:
-    Window(u32 width, u32 height, std::string_view title);
+    /// `event_queue` must outlive the window; GLFW callbacks push into it.
+    Window(u32 width, u32 height, std::string_view title, EventQueue& event_queue);
     ~Window();
 
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    std::span<const Event> poll_events();
     std::optional<Event> poll_event();
-    std::span<const Event> event_buffer() const;
     void clear_event_buffer();
     void swap_buffers() const;
 
@@ -34,14 +31,14 @@ public:
     bool valid() const;
 
 private:
+    void poll_events();
     void set_event_callbacks();
     static Window* from_glfw(GLFWwindow* glfw_window);
     static void push_glfw_event(GLFWwindow* glfw_window, Event event);
     void push_event(Event event);
 
-    GLFWwindow* m_window_handle;
-    std::vector<Event> m_event_buffer;
-    std::size_t m_next_event_index = 0;
+    GLFWwindow* m_window_handle = nullptr;
+    EventQueue* m_event_queue = nullptr;
 };
 
 } // namespace ngin

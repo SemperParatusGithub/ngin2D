@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/core.h"
-#include "application.h"
 #include "event.h"
 #include "key_codes.h"
 #include "input.h"
