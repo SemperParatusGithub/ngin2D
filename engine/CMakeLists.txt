@@ -32,8 +32,9 @@ add_library(engine STATIC
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h
-    src/scene/components/tag_component.h
     src/scene/components/id_component.h
+    src/scene/components/tag_component.h
+    src/scene/components/sprite_component.h
     src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
@@ -104,8 +105,9 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h
-    src/scene/components/tag_component.h
     src/scene/components/id_component.h
+    src/scene/components/tag_component.h
+    src/scene/components/sprite_component.h
     src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
