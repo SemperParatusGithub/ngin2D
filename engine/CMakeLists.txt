@@ -27,6 +27,14 @@ add_library(engine STATIC
     src/event.h
     src/event_queue.h
     src/event_queue.cpp
+    src/scene/scene.h
+    src/scene/scene.cpp
+    src/scene/entity.h
+    src/scene/entity.cpp
+    src/scene/components/components.h
+    src/scene/components/tag_component.h
+    src/scene/components/id_component.h
+    src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
     src/window.h
@@ -91,6 +99,14 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event.h
     src/event_queue.h
     src/event_queue.cpp
+    src/scene/scene.h
+    src/scene/scene.cpp
+    src/scene/entity.h
+    src/scene/entity.cpp
+    src/scene/components/components.h
+    src/scene/components/tag_component.h
+    src/scene/components/id_component.h
+    src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
     src/window.h
