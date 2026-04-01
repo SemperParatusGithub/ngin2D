@@ -67,6 +67,7 @@ add_library(engine STATIC
 
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/entt/src
 )
 
 target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
