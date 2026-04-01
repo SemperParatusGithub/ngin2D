@@ -2,6 +2,7 @@
 
 #include "core/types.h"
 
+#include <string_view>
 #include <entt/entt.hpp>
 
 namespace ngin {
