@@ -16,7 +16,7 @@ namespace ngin {
 // sub-texture or frame data instead of assuming a single whole-texture sprite.
 struct SpriteComponent {
 	SpriteComponent() = default;
-	SpriteComponent(const glm::vec4& color);
+	explicit SpriteComponent(const glm::vec4& color) : color(color) {}
 
 	ref<Texture> texture;
 	glm::vec4 color{ 1.0f, 1.0f, 1.0f, 1.0f };

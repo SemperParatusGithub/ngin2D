@@ -13,6 +13,8 @@ class Transform;
 class Texture;
 class Camera;
 class Framebuffer;
+struct TransformComponent;
+struct SpriteComponent;
 
 class Renderer {
 public:
@@ -62,6 +64,10 @@ public:
         const Framebuffer& framebuffer,
         u32 color_attachment_index = 0,
         const glm::vec4& tint = glm::vec4(1.0f)
+    );
+    static void submit_sprite(
+        const TransformComponent& transform_component,
+        const SpriteComponent& sprite_component
     );
     static void submit_sprite(const ref<Sprite>& sprite);
 };
