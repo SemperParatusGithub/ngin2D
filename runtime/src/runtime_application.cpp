@@ -93,7 +93,7 @@ void RuntimeApplication::on_destroy() {
     m_window.reset();
 }
 
-void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
+void RuntimeApplication::on_update(ngin::time_step delta_time) {
     if (!m_window || !m_window->valid()) {
         m_running = false;
         return;
