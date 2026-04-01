@@ -17,6 +17,7 @@ using i64 = std::int64_t;
 
 using f32 = float;
 using f64 = double;
+using time_step = f32;
 using time_stamp = f32;
 
 using renderer_id = u32;

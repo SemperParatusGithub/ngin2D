@@ -35,7 +35,7 @@ protected:
 private:
     void on_create();
     void on_destroy();
-    void on_update(ngin::time_stamp delta_time);
+    void on_update(ngin::time_step delta_time);
     void on_ngin_event(const ngin::Event& event);
     void on_render();
 

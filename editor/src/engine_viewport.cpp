@@ -116,7 +116,7 @@ void EngineViewport::on_ngin_event(const ngin::Event& event) {
     }
 }
 
-void EngineViewport::on_update(ngin::time_stamp delta_time) {
+void EngineViewport::on_update(ngin::time_step delta_time) {
     if (!m_gl_initialized || !m_camera) {
         return;
     }

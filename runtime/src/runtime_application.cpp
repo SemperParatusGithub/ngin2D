@@ -15,8 +15,8 @@ void RuntimeApplication::run() {
 
 	auto previous_time = static_cast<ngin::time_stamp>(glfwGetTime());
 	while (m_running) {
-		auto current_time = static_cast<ngin::time_stamp>(glfwGetTime());
-		auto delta_time = current_time - previous_time;
+        ngin::time_stamp current_time = static_cast<ngin::time_stamp>(glfwGetTime());
+        ngin::time_step delta_time = current_time - previous_time;
 		previous_time = current_time;
 
 		on_update(delta_time);
@@ -93,7 +93,7 @@ void RuntimeApplication::on_destroy() {
     m_window.reset();
 }
 
-void RuntimeApplication::on_update(ngin::time_stamp delta_time) {
+void RuntimeApplication::on_update(ngin::time_step delta_time) {
     if (!m_window || !m_window->valid()) {
         m_running = false;
         return;
