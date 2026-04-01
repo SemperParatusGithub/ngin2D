@@ -2,6 +2,7 @@
 
 #include "entity.h"
 
+#include "core/assert.h"
 #include "components/components.h"
 
 namespace ngin {
@@ -16,8 +17,9 @@ Entity Scene::create_entity(std::string_view tag) {
 }
 
 void Scene::destroy_entity(Entity entity) {
-	if (entity.is_valid() && entity.get_scene() == this)
-		m_registry.destroy(entity.get_handle());
+	NGIN_ASSERT_MSG(entity.get_scene() == this, "Attempted to destroy entity from a different scene");
+	NGIN_ASSERT_MSG(entity.is_valid(), "Attempted to destroy an invalid entity");
+	m_registry.destroy(entity.get_handle());
 }
 
 } // namespace ngin

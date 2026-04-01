@@ -2,6 +2,8 @@
 
 #include "scene.h"
 
+#include "core/assert.h"
+
 #include <entt/entity/entity.hpp>
 
 namespace ngin {
@@ -31,9 +33,11 @@ Entity::operator bool() const {
 }
 
 entt::entity Entity::get_handle() const {
+	NGIN_ASSERT_MSG(m_handle != entt::null, "Entity handle is null");
 	return m_handle;
 }
 Scene* Entity::get_scene() const {
+	NGIN_ASSERT_MSG(m_scene != nullptr, "Entity has no owning scene");
 	return m_scene;
 }
 
