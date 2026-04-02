@@ -26,7 +26,7 @@ public:
     static void clear_magenta();
 
     static void set_viewport(f32 x, f32 y, f32 width, f32 height);
-    /// When set, submit_* uses the camera projection×view matrix for `u_view_projection`.
+    /// When set, submit_* uses the camera projection * view matrix for `u_view_projection`.
     /// If no camera is set (or after remove_camera), `u_view_projection` is the identity matrix.
     static void set_camera(ref<Camera> camera);
     static void remove_camera();
