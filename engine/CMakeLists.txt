@@ -27,6 +27,15 @@ add_library(engine STATIC
     src/event.h
     src/event_queue.h
     src/event_queue.cpp
+    src/scene/scene.h
+    src/scene/scene.cpp
+    src/scene/entity.h
+    src/scene/entity.cpp
+    src/scene/components/components.h
+    src/scene/components/id_component.h
+    src/scene/components/tag_component.h
+    src/scene/components/sprite_component.h
+    src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
     src/window.h
@@ -67,6 +76,7 @@ add_library(engine STATIC
 
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/entt/src
 )
 
 target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
@@ -90,6 +100,15 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event.h
     src/event_queue.h
     src/event_queue.cpp
+    src/scene/scene.h
+    src/scene/scene.cpp
+    src/scene/entity.h
+    src/scene/entity.cpp
+    src/scene/components/components.h
+    src/scene/components/id_component.h
+    src/scene/components/tag_component.h
+    src/scene/components/sprite_component.h
+    src/scene/components/transform_component.h
     src/engine.cpp
     src/engine.h
     src/window.h

@@ -21,6 +21,7 @@ using time_step = f32;
 using time_stamp = f32;
 
 using renderer_id = u32;
+using internal_entity_id = u64;
 
 template <typename T>
 using scope = std::unique_ptr<T>;
