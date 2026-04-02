@@ -6,7 +6,11 @@
 #include "components/components.h"
 
 namespace ngin {
-
+Entity Scene::create_entity()
+{
+	std::string tag = "Entity " + std::to_string(m_next_id);
+	return create_entity(tag);
+}
 Entity Scene::create_entity(std::string_view tag) {
 	auto handle = m_registry.create();
 	m_registry.emplace<IDComponent>(handle, m_next_id++);
