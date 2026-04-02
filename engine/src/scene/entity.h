@@ -17,6 +17,11 @@ public:
 	bool is_valid() const;
 	explicit operator bool() const;
 
+	bool operator==(const Entity& other) const {
+		return m_scene == other.m_scene && m_handle == other.m_handle;
+	}
+	bool operator!=(const Entity& other) const { return !(*this == other); }
+
 	entt::entity get_handle() const;
 	Scene* get_scene() const;
 
