@@ -15,7 +15,6 @@ Entity Scene::create_entity(std::string_view tag) {
 	auto handle = m_registry.create();
 	m_registry.emplace<IDComponent>(handle, m_next_id++);
 	m_registry.emplace<TagComponent>(handle, tag);
-	m_registry.emplace<TransformComponent>(handle);
 
 	return Entity{ handle, this };
 }

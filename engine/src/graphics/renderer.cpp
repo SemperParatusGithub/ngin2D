@@ -9,8 +9,6 @@
 #include "scene/components/sprite_component.h"
 #include "scene/components/transform_component.h"
 
-#include <entt/entt.hpp>
-
 #include "graphics/camera.h"
 #include "transform.h"
 

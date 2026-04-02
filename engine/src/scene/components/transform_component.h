@@ -6,6 +6,7 @@ namespace ngin {
 
 struct TransformComponent {
 	TransformComponent() = default;
+	TransformComponent(const Transform& transform) : transform(transform) {}
 
 	Transform transform;
 };

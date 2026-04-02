@@ -4,6 +4,9 @@
 #include "hierarchy_panel.h"
 #include "inspector_panel.h"
 
+#include "transform.h"
+#include "scene/components/components.h"
+
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QKeySequence>
@@ -26,7 +29,7 @@ void Editor::run() {
     outer->setSpacing(0);
 
     auto* side = new QWidget(central);
-    side->setFixedWidth(280);
+    side->setFixedWidth(335);
 
     auto* sideLay = new QVBoxLayout(side);
     sideLay->setContentsMargins(6, 6, 6, 6);
@@ -36,9 +39,9 @@ void Editor::run() {
     m_inspector_panel = new InspectorPanel(this, side);
 
     sideLay->addWidget(m_hierarchy_panel, 1);
-    sideLay->addWidget(m_inspector_panel, 0);
+    sideLay->addWidget(m_inspector_panel, 1);
 
-    auto* viewport = new EngineViewport(central);
+    auto* viewport = new EngineViewport(this, central);
     viewport->setFocusPolicy(Qt::ClickFocus);
     viewport->setMinimumSize(320, 240);
     viewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -52,11 +55,26 @@ void Editor::run() {
     QObject::connect(this, &Editor::scene_contents_changed, m_hierarchy_panel, &HierarchyPanel::refresh);
     QObject::connect(this, &Editor::scene_contents_changed, m_inspector_panel, &InspectorPanel::refresh);
 
+    QObject::connect(this, &Editor::scene_contents_changed, viewport, [viewport]() {
+        viewport->update();
+    });
+
     auto* delete_shortcut = new QShortcut(QKeySequence::Delete, &window);
     delete_shortcut->setContext(Qt::WindowShortcut);
     QObject::connect(delete_shortcut, &QShortcut::activated, this, [this]() {
         delete_entity(m_selected_entity);
     });
+
+	auto test_ent_1 = m_scene.create_entity();
+	auto test_ent_2 = m_scene.create_entity();
+    ngin::Transform t;
+    t.set_position({ 100.0f, 100.0f, 0.0f });
+    t.set_scale({ 100.0f, 100.0f, 0.0f });
+    test_ent_1.emplace<ngin::TransformComponent>(t);
+	test_ent_1.emplace<ngin::SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+	t.set_position({ 250.0f, 100.0f, 0.0f });
+	test_ent_2.emplace<ngin::TransformComponent>(t);
+	test_ent_2.emplace<ngin::SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
     emit scene_contents_changed();
     emit selection_changed();
@@ -97,10 +115,6 @@ void Editor::delete_entity(ngin::Entity entity) {
 
     const bool was_selected = (m_selected_entity == entity);
     m_scene.destroy_entity(entity);
-
-    if (was_selected) {
-        m_selected_entity = {};
-    }
 
     emit scene_contents_changed();
     if (was_selected) {
