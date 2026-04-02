@@ -1,13 +1,19 @@
 #include "editor.h"
 
 #include "core/log.h"
+#include "scene/entity.h"
 
 #include <QApplication>
+#include <QMetaType>
 #include <QSurfaceFormat>
+
+Q_DECLARE_METATYPE(ngin::Entity)
 
 int main(int argc, char* argv[]) {
 	ngin::log::initialize();
 	NGIN_INFO("Initializing Log system");
+
+    qRegisterMetaType<ngin::Entity>("ngin::Entity");
 
     QSurfaceFormat format;
     format.setVersion(3, 3);

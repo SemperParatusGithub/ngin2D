@@ -13,7 +13,7 @@
 #include "graphics/texture.h"
 
 class QKeyEvent;
-class QResizeEvent;
+class QFocusEvent;
 class QTimer;
 class QWheelEvent;
 
@@ -26,7 +26,8 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-    void resizeEvent(QResizeEvent* event) override;
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
 
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;

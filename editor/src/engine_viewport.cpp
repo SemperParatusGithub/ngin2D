@@ -2,9 +2,8 @@
 
 #include "engine_viewport.h"
 
+#include <QFocusEvent>
 #include <QKeyEvent>
-#include <QPainterPath>
-#include <QResizeEvent>
 #include <QTimer>
 #include <QWheelEvent>
 
@@ -164,7 +163,7 @@ void EngineViewport::on_render() {
         static_cast<ngin::f32>(m_viewport_height)
     );
     ngin::Renderer::set_camera(m_camera);
-    ngin::Renderer::set_clear_color({0.0f, 0.0f, 0.0f, 0.0f});
+    ngin::Renderer::set_clear_color({0.8f, 0.8f, 0.8f, 0.8f});
     ngin::Renderer::clear();
 
     {
@@ -223,12 +222,16 @@ void EngineViewport::resizeGL(int w, int h) {
     }
 }
 
-void EngineViewport::resizeEvent(QResizeEvent* event) {
-    QOpenGLWidget::resizeEvent(event);
+void EngineViewport::focusInEvent(QFocusEvent* event) {
+    NGIN_INFO("Editor viewport focused");
+    QOpenGLWidget::focusInEvent(event);
+}
 
-    QPainterPath clip_path;
-    clip_path.addRoundedRect(rect(), 16.0, 16.0);
-    setMask(QRegion(clip_path.toFillPolygon().toPolygon()));
+void EngineViewport::focusOutEvent(QFocusEvent* event) {
+    NGIN_INFO("Editor viewport unfocused");
+    m_event_queue.clear();
+    m_keys_held.clear();
+    QOpenGLWidget::focusOutEvent(event);
 }
 
 void EngineViewport::paintGL() {
@@ -243,6 +246,11 @@ void EngineViewport::paintGL() {
 }
 
 void EngineViewport::keyPressEvent(QKeyEvent* event) {
+    if (!hasFocus()) {
+        QOpenGLWidget::keyPressEvent(event);
+        return;
+    }
+
     if (auto ev = ngin::editor::event_from_qt_key_press(event)) {
         m_event_queue.push(std::move(*ev));
         event->accept();
@@ -252,6 +260,11 @@ void EngineViewport::keyPressEvent(QKeyEvent* event) {
 }
 
 void EngineViewport::keyReleaseEvent(QKeyEvent* event) {
+    if (!hasFocus()) {
+        QOpenGLWidget::keyReleaseEvent(event);
+        return;
+    }
+
     if (auto ev = ngin::editor::event_from_qt_key_release(event)) {
         m_event_queue.push(std::move(*ev));
         event->accept();
@@ -261,6 +274,11 @@ void EngineViewport::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void EngineViewport::wheelEvent(QWheelEvent* event) {
+    if (!hasFocus()) {
+        QOpenGLWidget::wheelEvent(event);
+        return;
+    }
+
     if (auto ev = ngin::editor::event_from_qt_wheel(event)) {
         m_event_queue.push(std::move(*ev));
         event->accept();

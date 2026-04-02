@@ -8,6 +8,10 @@ add_executable(editor
     src/main.cpp
     src/editor.cpp
     src/editor.h
+    src/hierarchy_panel.cpp
+    src/hierarchy_panel.h
+    src/inspector_panel.cpp
+    src/inspector_panel.h
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp
@@ -21,6 +25,7 @@ target_include_directories(editor PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/engine/third_party/glad/include
 )
+# Engine is a normal linked library: consume it like third-party API (stable headers / ngin:: types).
 target_link_libraries(editor PRIVATE Qt6::Widgets Qt6::OpenGLWidgets engine)
 
 # Same layout as runtime: assets/shaders next to editor.exe so Renderer relative paths work.
@@ -63,6 +68,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/main.cpp
     src/editor.cpp
     src/editor.h
+    src/hierarchy_panel.cpp
+    src/hierarchy_panel.h
+    src/inspector_panel.cpp
+    src/inspector_panel.h
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp

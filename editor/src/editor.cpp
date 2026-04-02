@@ -1,91 +1,113 @@
 #include "editor.h"
 
 #include "engine_viewport.h"
+#include "hierarchy_panel.h"
+#include "inspector_panel.h"
 
 #include <QApplication>
-#include <QFrame>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QListWidget>
+#include <QKeySequence>
 #include <QMainWindow>
+#include <QShortcut>
 #include <QSizePolicy>
 #include <QVBoxLayout>
 #include <QWidget>
+
+Editor::Editor(QObject* parent) : QObject(parent) {}
 
 void Editor::run() {
     QMainWindow window;
     window.setWindowTitle(QStringLiteral("ngin2D Editor"));
     window.resize(1280, 720);
 
-    QWidget* central = new QWidget(&window);
-    central->setStyleSheet(QStringLiteral(
-        "QWidget#editorRoot { background-color: #1a1c24; }"
-        "QFrame#editorSidePanel { background-color: #1e212b; border-right: 1px solid #32374a; }"
-        "QLabel#sideTitle { color: #e8e9ef; font-size: 13px; font-weight: 600; }"
-        "QListWidget { background: transparent; border: none; color: #c4c6cf; font-size: 13px; outline: 0; }"
-        "QListWidget::item { padding: 8px 10px; border-radius: 6px; }"
-        "QListWidget::item:hover { background-color: #2a2f42; }"
-        "QListWidget::item:selected { background-color: #5b7fff; color: #ffffff; }"
-        "QFrame#viewportCard { background-color: #252836; border: none; border-radius: 18px; }"));
-    central->setObjectName(QStringLiteral("editorRoot"));
-
-    QHBoxLayout* outer = new QHBoxLayout(central);
-    outer->setContentsMargins(2, 2, 2, 2);
+    auto* central = new QWidget(&window);
+    auto* outer = new QHBoxLayout(central);
+    outer->setContentsMargins(6, 6, 6, 6);
     outer->setSpacing(0);
 
-    auto* side = new QFrame(central);
-    side->setObjectName(QStringLiteral("editorSidePanel"));
-    side->setFrameShape(QFrame::NoFrame);
-    side->setFixedWidth(230);
+    auto* side = new QWidget(central);
+    side->setFixedWidth(280);
 
-    QVBoxLayout* sideLay = new QVBoxLayout(side);
-    sideLay->setContentsMargins(12, 14, 10, 12);
-    sideLay->setSpacing(10);
+    auto* sideLay = new QVBoxLayout(side);
+    sideLay->setContentsMargins(6, 6, 6, 6);
+    sideLay->setSpacing(6);
 
-    QLabel* sideTitle = new QLabel(QStringLiteral("Menu"));
-    sideTitle->setObjectName(QStringLiteral("sideTitle"));
-    sideLay->addWidget(sideTitle);
+    m_hierarchy_panel = new HierarchyPanel(this, side);
+    m_inspector_panel = new InspectorPanel(this, side);
 
-    QListWidget* menuList = new QListWidget(side);
-    menuList->setFocusPolicy(Qt::NoFocus);
-    menuList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    menuList->addItems({
-        QStringLiteral("File"),
-        QStringLiteral("Edit"),
-        QStringLiteral("View"),
-        QStringLiteral("Scene"),
-        QStringLiteral("Build"),
-        QStringLiteral("Help"),
-    });
-    menuList->setCurrentRow(2);
-    sideLay->addWidget(menuList, 1);
+    sideLay->addWidget(m_hierarchy_panel, 1);
+    sideLay->addWidget(m_inspector_panel, 0);
 
-    auto* workspace = new QWidget(central);
-    QVBoxLayout* workspaceLay = new QVBoxLayout(workspace);
-    workspaceLay->setContentsMargins(10, 10, 10, 10);
-    workspaceLay->setSpacing(0);
-
-    auto* viewportCard = new QFrame(workspace);
-    viewportCard->setObjectName(QStringLiteral("viewportCard"));
-    viewportCard->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QVBoxLayout* viewportCardLay = new QVBoxLayout(viewportCard);
-    viewportCardLay->setContentsMargins(2, 2, 2, 2);
-    viewportCardLay->setSpacing(0);
-
-    auto* viewport = new EngineViewport(viewportCard);
-    viewport->setFocusPolicy(Qt::StrongFocus);
-    viewport->setMinimumSize(480, 360);
+    auto* viewport = new EngineViewport(central);
+    viewport->setFocusPolicy(Qt::ClickFocus);
+    viewport->setMinimumSize(320, 240);
     viewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    viewport->setStyleSheet(QStringLiteral("background-color: #0f172a; border-radius: 16px;"));
-    viewportCardLay->addWidget(viewport);
 
-    workspaceLay->addWidget(viewportCard, 1);
     outer->addWidget(side);
-    outer->addWidget(workspace, 1);
+    outer->addWidget(viewport, 1);
+
+    QObject::connect(this, &Editor::selection_changed, m_hierarchy_panel, &HierarchyPanel::refresh);
+    QObject::connect(this, &Editor::selection_changed, m_inspector_panel, &InspectorPanel::refresh);
+
+    QObject::connect(this, &Editor::scene_contents_changed, m_hierarchy_panel, &HierarchyPanel::refresh);
+    QObject::connect(this, &Editor::scene_contents_changed, m_inspector_panel, &InspectorPanel::refresh);
+
+    auto* delete_shortcut = new QShortcut(QKeySequence::Delete, &window);
+    delete_shortcut->setContext(Qt::WindowShortcut);
+    QObject::connect(delete_shortcut, &QShortcut::activated, this, [this]() {
+        delete_entity(m_selected_entity);
+    });
+
+    emit scene_contents_changed();
+    emit selection_changed();
 
     window.setCentralWidget(central);
     window.show();
-    viewport->setFocus(Qt::OtherFocusReason);
 
     QApplication::exec();
+}
+
+ngin::Scene& Editor::get_scene() {
+    return m_scene;
+}
+
+const ngin::Scene& Editor::get_scene() const {
+    return m_scene;
+}
+
+void Editor::set_selected_entity(ngin::Entity entity) {
+	if (m_selected_entity == entity) {
+		return;
+	}
+	m_selected_entity = entity;
+	emit selection_changed();
+}
+
+ngin::Entity Editor::create_entity() {
+    const ngin::Entity created = m_scene.create_entity();
+    set_selected_entity(created);
+    emit scene_contents_changed();
+    return created;
+}
+
+void Editor::delete_entity(ngin::Entity entity) {
+    if (!entity) {
+        return;
+    }
+
+    const bool was_selected = (m_selected_entity == entity);
+    m_scene.destroy_entity(entity);
+
+    if (was_selected) {
+        m_selected_entity = {};
+    }
+
+    emit scene_contents_changed();
+    if (was_selected) {
+        emit selection_changed();
+    }
+}
+
+void Editor::notify_scene_contents_changed() {
+    emit scene_contents_changed();
 }
