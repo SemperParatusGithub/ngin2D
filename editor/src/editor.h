@@ -24,7 +24,6 @@ public:
 
     ngin::Entity create_entity();
     void delete_entity(ngin::Entity entity);
-    void delete_selected_entity();
 
     void notify_scene_contents_changed();
 
