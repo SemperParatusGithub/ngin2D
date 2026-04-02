@@ -13,6 +13,7 @@ class Transform;
 class Texture;
 class Camera;
 class Framebuffer;
+class Scene;
 struct TransformComponent;
 struct SpriteComponent;
 
@@ -70,6 +71,8 @@ public:
         const SpriteComponent& sprite_component
     );
     static void submit_sprite(const ref<Sprite>& sprite);
+
+    static void submit_scene(const Scene& scene);
 };
 
 } // namespace ngin

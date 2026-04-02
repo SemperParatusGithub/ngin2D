@@ -5,8 +5,11 @@
 #include "graphics/framebuffer.h"
 #include "graphics/sprite.h"
 #include "graphics/texture.h"
+#include "scene/scene.h"
 #include "scene/components/sprite_component.h"
 #include "scene/components/transform_component.h"
+
+#include <entt/entt.hpp>
 
 #include "graphics/camera.h"
 #include "transform.h"
@@ -335,6 +338,16 @@ void Renderer::submit_sprite(
     }
 
     submit_quad(transform_component.transform, sprite_component.color);
+}
+
+void Renderer::submit_scene(const Scene& scene) {
+    NGIN_ASSERT_MSG(s_render_data, "Renderer not initialized.");
+
+    const auto& registry = scene.get_registry();
+    const auto view = registry.view<const TransformComponent, const SpriteComponent>();
+    view.each([](const entt::entity, const TransformComponent& tc, const SpriteComponent& sc) {
+        submit_sprite(tc, sc);
+    });
 }
 
 void Renderer::submit_sprite(const ref<Sprite>& sprite) {
