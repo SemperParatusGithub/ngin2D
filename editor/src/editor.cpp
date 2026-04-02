@@ -116,6 +116,10 @@ void Editor::delete_entity(ngin::Entity entity) {
     const bool was_selected = (m_selected_entity == entity);
     m_scene.destroy_entity(entity);
 
+    if (was_selected) {
+        m_selected_entity = {};
+    }
+
     emit scene_contents_changed();
     if (was_selected) {
         emit selection_changed();
