@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include "engine_viewport.h"
 
 #include "editor.h"
