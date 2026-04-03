@@ -1,8 +1,19 @@
+include(FetchContent)
+
+set(GLFW_FETCH_VERSION "3.4" CACHE STRING "GLFW release tag or commit for FetchContent")
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG ${GLFW_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
-add_subdirectory(third_party/glfw)
+FetchContent_MakeAvailable(glfw)
 
 set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
