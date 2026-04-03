@@ -1,17 +1,56 @@
+include(FetchContent)
+
+set(GLFW_FETCH_VERSION "3.4" CACHE STRING "GLFW release tag or commit for FetchContent")
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG ${GLFW_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
-add_subdirectory(third_party/glfw)
+FetchContent_MakeAvailable(glfw)
 
+set(SPDLOG_FETCH_VERSION "v1.17.0" CACHE STRING "spdlog git tag or commit for FetchContent")
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG ${SPDLOG_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
 set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_BENCH OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 set(SPDLOG_FMT_EXTERNAL OFF CACHE BOOL "" FORCE)
+set(SPDLOG_INSTALL OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(spdlog)
 
-add_subdirectory(third_party/spdlog)
-add_subdirectory(third_party/glm)
+set(GLM_FETCH_VERSION "1.0.3" CACHE STRING "GLM git tag or commit for FetchContent")
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG ${GLM_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+set(GLM_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLM_BUILD_INSTALL OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(glm)
+
+set(ENTT_FETCH_VERSION "v3.16.0" CACHE STRING "EnTT git tag or commit for FetchContent")
+FetchContent_Declare(
+    entt
+    GIT_REPOSITORY https://github.com/skypjack/entt.git
+    GIT_TAG ${ENTT_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+set(ENTT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(ENTT_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(entt)
 
 add_library(glad STATIC
     third_party/glad/src/glad.c
@@ -76,11 +115,10 @@ add_library(engine STATIC
 
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/entt/src
 )
 
 target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
-target_link_libraries(engine PUBLIC glm::glm)
+target_link_libraries(engine PUBLIC glm::glm EnTT::EnTT)
 target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
 # GLSL sources live under engine/assets/shaders (not compiled; listed for IDE visibility).
