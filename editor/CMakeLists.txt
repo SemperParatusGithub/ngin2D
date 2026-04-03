@@ -8,6 +8,8 @@ add_executable(editor
     src/main.cpp
     src/editor.cpp
     src/editor.h
+    src/file_dialog.cpp
+    src/file_dialog.h
     src/hierarchy_panel.cpp
     src/hierarchy_panel.h
     src/inspector_panel.cpp
@@ -68,6 +70,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/main.cpp
     src/editor.cpp
     src/editor.h
+    src/file_dialog.cpp
+    src/file_dialog.h
     src/hierarchy_panel.cpp
     src/hierarchy_panel.h
     src/inspector_panel.cpp
