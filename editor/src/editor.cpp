@@ -1,9 +1,11 @@
 #include "editor.h"
 
 #include "engine_viewport.h"
+#include "file_dialog.h"
 #include "hierarchy_panel.h"
 #include "inspector_panel.h"
 
+#include "core/log.h"
 #include "transform.h"
 #include "scene/components/components.h"
 
@@ -11,6 +13,7 @@
 #include <QHBoxLayout>
 #include <QKeySequence>
 #include <QMainWindow>
+#include <QMenuBar>
 #include <QShortcut>
 #include <QSizePolicy>
 #include <QVBoxLayout>
@@ -80,6 +83,32 @@ void Editor::run() {
     emit selection_changed();
 
     window.setCentralWidget(central);
+
+    QMenu* const file_menu = window.menuBar()->addMenu(tr("&File"));
+    QAction* const open_action = file_menu->addAction(tr("&Open..."));
+    open_action->setShortcut(QKeySequence::Open);
+    QObject::connect(open_action, &QAction::triggered, &window, [&window]() {
+        if (const auto path = ngin::editor::open_file_dialog(&window, {.title = tr("Open")})) {
+            NGIN_INFO("File > Open (not implemented): {}", path->toStdString());
+        }
+    });
+
+    QAction* const save_action = file_menu->addAction(tr("&Save..."));
+    save_action->setShortcut(QKeySequence::Save);
+    QObject::connect(save_action, &QAction::triggered, &window, [&window]() {
+        if (const auto path = ngin::editor::save_file_dialog(
+                &window,
+                {
+                    .title = tr("Save"),
+                    .name_filter = QStringLiteral("Scene (*.scene);;All files (*.*)"),
+                    .default_file_name = QStringLiteral("untitled.scene"),
+                    .default_suffix = QStringLiteral("scene"),
+                }
+            )) {
+            NGIN_INFO("File > Save (not implemented): {}", path->toStdString());
+        }
+    });
+
     window.show();
 
     QApplication::exec();
