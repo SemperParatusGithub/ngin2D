@@ -27,7 +27,7 @@ QString save_dialog_start_path(const FileDialogOptions& opts) {
     const QString base_dir = opts.directory.isEmpty() ? QDir::homePath() : opts.directory;
 
     if (opts.default_file_name.isEmpty()) {
-        return opts.directory.isEmpty() ? QDir::homePath() : opts.directory;
+        return base_dir;
     }
 
     const QFileInfo name_info(opts.default_file_name);
