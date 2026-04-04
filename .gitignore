@@ -1,5 +1,7 @@
 # Build output
 build/
+build-fetch/
+build-verify/
 out/
 cmake-build-*/
 
