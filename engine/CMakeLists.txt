@@ -111,6 +111,8 @@ add_library(engine STATIC
     src/core/log.cpp
     src/core/assert.h
     src/core/core.h
+    src/core/filesystem.h
+    src/core/filesystem.cpp
 )
 
 target_include_directories(engine PUBLIC
@@ -183,6 +185,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/core/log.cpp
     src/core/assert.h
     src/core/core.h
+    src/core/filesystem.h
+    src/core/filesystem.cpp
     third_party/glad/src/glad.c
     third_party/glad/include/glad/glad.h
     third_party/glad/include/KHR/khrplatform.h

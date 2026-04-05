@@ -1,5 +1,7 @@
 #include "runtime_application.h"
 
+#include "core/filesystem.h"
+
 #include <filesystem>
 #include <optional>
 
@@ -48,7 +50,7 @@ void RuntimeApplication::on_create() {
 
     m_texture = ngin::create_ref<ngin::Texture>();
     const bool texture_loaded = m_texture->load_from_file(
-        std::filesystem::path("assets/textures/wall.jpg")
+        ngin::Filesystem::get_executable_dir() / "assets/textures/wall.jpg"
     );
     if (!texture_loaded || !m_texture->is_valid()) {
         NGIN_ERROR("Failed to load runtime texture");
