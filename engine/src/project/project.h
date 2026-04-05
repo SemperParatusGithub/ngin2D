@@ -7,9 +7,19 @@ namespace ngin {
 
 class Project {
 public:
+	struct Json {
+		static constexpr const char* project_name = "project_name";
+		static constexpr const char* root_directory = "root_directory";
+		static constexpr const char* relative_asset_directory = "relative_asset_directory";
+		static constexpr const char* relative_default_scene = "relative_default_scene";
+	};
+
 	Project() = default;
 	Project(std::string_view project_name);
 	~Project() = default;
+
+	void set_project_name(std::string_view name);
+	const std::string& get_project_name() const;
 
 	void set_root_directory(std::filesystem::path root_dir);
 	const std::filesystem::path& get_root_directory() const;

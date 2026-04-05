@@ -52,6 +52,17 @@ set(ENTT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set(ENTT_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(entt)
 
+set(NLOHMANN_JSON_FETCH_VERSION "v3.12.0" CACHE STRING "nlohmann/json release tag for FetchContent")
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG ${NLOHMANN_JSON_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+set(JSON_BuildTests OFF CACHE BOOL "" FORCE)
+set(JSON_Install OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(nlohmann_json)
+
 add_library(glad STATIC
     third_party/glad/src/glad.c
     third_party/glad/include/glad/glad.h
@@ -101,6 +112,8 @@ add_library(engine STATIC
     src/graphics/camera.cpp
     src/project/project.h
     src/project/project.cpp
+    src/project/project_serializer.h
+    src/project/project_serializer.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h
@@ -121,7 +134,7 @@ target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
+target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog nlohmann_json::nlohmann_json)
 target_link_libraries(engine PUBLIC glm::glm EnTT::EnTT)
 target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
@@ -177,6 +190,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/camera.cpp
     src/project/project.h
     src/project/project.cpp
+    src/project/project_serializer.h
+    src/project/project_serializer.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h

@@ -8,6 +8,13 @@ Project::Project(std::string_view project_name) :
 
 }
 
+void Project::set_project_name(std::string_view name) {
+	m_project_name = name;
+}
+const std::string& Project::get_project_name() const {
+	return m_project_name;
+}
+
 void Project::set_root_directory(std::filesystem::path root_dir) {
 	m_root_directory = root_dir;
 }
