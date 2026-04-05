@@ -99,6 +99,8 @@ add_library(engine STATIC
     src/graphics/graphics_pipeline.cpp
     src/graphics/camera.h
     src/graphics/camera.cpp
+    src/project/project.h
+    src/project/project.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h
@@ -173,6 +175,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/graphics_pipeline.cpp
     src/graphics/camera.h
     src/graphics/camera.cpp
+    src/project/project.h
+    src/project/project.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h
