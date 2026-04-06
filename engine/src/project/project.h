@@ -26,11 +26,11 @@ public:
 
 	void set_relative_asset_directory(std::filesystem::path relative_assert_dir);
 	const std::filesystem::path& get_relative_asset_directory() const;
-	const std::filesystem::path& get_asset_directory() const;
+	std::filesystem::path get_asset_directory() const;
 
 	void set_relative_default_scene(std::filesystem::path relative_default_scene);
 	const std::filesystem::path& get_realitve_default_scene() const;
-	const std::filesystem::path& get_default_scene() const;
+	std::filesystem::path get_default_scene() const;
 
 private:
 	std::string m_project_name = "Untitled Project";

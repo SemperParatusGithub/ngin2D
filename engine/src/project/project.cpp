@@ -28,7 +28,7 @@ void Project::set_relative_asset_directory(std::filesystem::path relative_assert
 const std::filesystem::path& Project::get_relative_asset_directory() const {
 	return m_asset_directory;
 }
-const std::filesystem::path& Project::get_asset_directory() const {
+std::filesystem::path Project::get_asset_directory() const {
 	return m_root_directory / m_asset_directory;
 }
 
@@ -38,7 +38,7 @@ void Project::set_relative_default_scene(std::filesystem::path relative_default_
 const std::filesystem::path& Project::get_realitve_default_scene() const {
 	return m_default_scene;
 }
-const std::filesystem::path& Project::get_default_scene() const {
+std::filesystem::path Project::get_default_scene() const {
 	return m_root_directory / m_default_scene;
 }
 
