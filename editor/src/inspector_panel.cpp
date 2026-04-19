@@ -13,9 +13,7 @@
 
 #include <QColor>
 #include <QColorDialog>
-#include <QCursor>
 #include <QDoubleSpinBox>
-#include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -90,10 +88,8 @@ QColor vec4_to_qcolor(const glm::vec4& v) {
 
 void apply_sprite_color_swatch(QPushButton* btn, const glm::vec4& color) {
     const QColor qc = vec4_to_qcolor(color);
-    btn->setStyleSheet(QStringLiteral(
-        "QPushButton { background-color: %1; border: 1px solid #4a4f66; border-radius: 8px; min-height: 28px; max-height: 28px; }"
-        "QPushButton:hover { border: 1px solid #5b7fff; }"
-    ).arg(qc.name(QColor::HexArgb)));
+    btn->setStyleSheet(
+        QStringLiteral("QPushButton { background-color: %1; }").arg(qc.name(QColor::HexArgb)));
     btn->setToolTip(QStringLiteral("Sprite tint (click to pick)"));
 }
 
@@ -201,9 +197,6 @@ InspectorPanel::InspectorPanel(Editor* editor, QWidget* parent) : QWidget(parent
     tLay->setSpacing(6);
 
     auto* transTitle = new QLabel(QStringLiteral("Transform"), m_transform_section);
-    QFont tf = transTitle->font();
-    tf.setBold(true);
-    transTitle->setFont(tf);
     tLay->addWidget(transTitle);
 
     tLay->addLayout(make_xyz_row(
@@ -248,16 +241,12 @@ InspectorPanel::InspectorPanel(Editor* editor, QWidget* parent) : QWidget(parent
     sLay->setSpacing(6);
 
     auto* sprite_title = new QLabel(QStringLiteral("Sprite"), m_sprite_section);
-    QFont sprite_font = sprite_title->font();
-    sprite_font.setBold(true);
-    sprite_title->setFont(sprite_font);
     sLay->addWidget(sprite_title);
 
     auto* color_row = new QHBoxLayout();
     color_row->setSpacing(8);
     color_row->addWidget(new QLabel(QStringLiteral("Color"), m_sprite_section));
     m_sprite_color_button = new QPushButton(m_sprite_section);
-    m_sprite_color_button->setCursor(Qt::PointingHandCursor);
     m_sprite_color_button->setMinimumWidth(120);
     apply_sprite_color_swatch(m_sprite_color_button, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     color_row->addWidget(m_sprite_color_button, 1);

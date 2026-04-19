@@ -6,10 +6,15 @@ set(CMAKE_AUTOUIC ON)
 
 add_executable(editor
     src/main.cpp
+    src/new_project_dialog.cpp
+    src/new_project_dialog.h
+    src/project_launcher_window.cpp
+    src/project_launcher_window.h
     src/editor.cpp
     src/editor.h
     src/file_dialog.cpp
     src/file_dialog.h
+    src/qt_path_utils.h
     src/hierarchy_panel.cpp
     src/hierarchy_panel.h
     src/inspector_panel.cpp
@@ -19,8 +24,6 @@ add_executable(editor
     src/opengl_context_qt.cpp
     src/qt_input_adapter.cpp
     src/qt_input_adapter.h
-    src/dashboard_theme.cpp
-    src/dashboard_theme.h
 )
 
 target_include_directories(editor PRIVATE
@@ -68,10 +71,15 @@ endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/main.cpp
+    src/new_project_dialog.cpp
+    src/new_project_dialog.h
+    src/project_launcher_window.cpp
+    src/project_launcher_window.h
     src/editor.cpp
     src/editor.h
     src/file_dialog.cpp
     src/file_dialog.h
+    src/qt_path_utils.h
     src/hierarchy_panel.cpp
     src/hierarchy_panel.h
     src/inspector_panel.cpp
@@ -81,6 +89,4 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/opengl_context_qt.cpp
     src/qt_input_adapter.cpp
     src/qt_input_adapter.h
-    src/dashboard_theme.cpp
-    src/dashboard_theme.h
 )

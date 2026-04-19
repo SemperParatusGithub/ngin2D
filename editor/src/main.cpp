@@ -1,9 +1,11 @@
 #include "editor.h"
+#include "project_launcher_window.h"
 
 #include "core/log.h"
 #include "scene/entity.h"
 
 #include <QApplication>
+#include <QDialog>
 #include <QMetaType>
 #include <QSurfaceFormat>
 
@@ -25,8 +27,15 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
 
+    ProjectLauncherWindow launcher;
+    if (launcher.exec() != QDialog::Accepted) {
+        NGIN_INFO("Shutting Log system down");
+        ngin::log::release();
+        return 0;
+    }
+
     Editor editor;
-    editor.run();
+    editor.run(launcher.selected_project_path());
 
 	NGIN_INFO("Shutting Log system down");
 	ngin::log::release();

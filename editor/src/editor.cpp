@@ -3,9 +3,11 @@
 #include "engine_viewport.h"
 #include "file_dialog.h"
 #include "hierarchy_panel.h"
+#include "qt_path_utils.h"
 #include "inspector_panel.h"
 
 #include "core/log.h"
+#include "project/project_serializer.h"
 #include "transform.h"
 #include "scene/components/components.h"
 
@@ -14,6 +16,7 @@
 #include <QKeySequence>
 #include <QMainWindow>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QShortcut>
 #include <QSizePolicy>
 #include <QVBoxLayout>
@@ -21,9 +24,16 @@
 
 Editor::Editor(QObject* parent) : QObject(parent) {}
 
-void Editor::run() {
+void Editor::run(const std::filesystem::path& project_file_path) {
+    m_project_file_path = project_file_path;
+    if (!ngin::ProjectSerializer::deserialize(m_project, project_file_path)) {
+        QMessageBox::critical(nullptr, tr("Editor"), tr("Could not load the project file."));
+        return;
+    }
+
     QMainWindow window;
-    window.setWindowTitle(QStringLiteral("ngin2D Editor"));
+    window.setWindowTitle(
+        tr("%1 - %2").arg(QStringLiteral("ngin2D Editor"), QString::fromStdString(m_project.get_project_name())));
     window.resize(1280, 720);
 
     auto* central = new QWidget(&window);
@@ -89,7 +99,7 @@ void Editor::run() {
     open_action->setShortcut(QKeySequence::Open);
     QObject::connect(open_action, &QAction::triggered, &window, [&window]() {
         if (const auto path = ngin::editor::open_file_dialog(&window, {.title = tr("Open")})) {
-            NGIN_INFO("File > Open (not implemented): {}", path->toStdString());
+            NGIN_INFO("File > Open (not implemented): {}", ngin::editor::path_to_qstring(*path).toStdString());
         }
     });
 
@@ -105,7 +115,7 @@ void Editor::run() {
                     .default_suffix = QStringLiteral("scene"),
                 }
             )) {
-            NGIN_INFO("File > Save (not implemented): {}", path->toStdString());
+            NGIN_INFO("File > Save (not implemented): {}", ngin::editor::path_to_qstring(*path).toStdString());
         }
     });
 
