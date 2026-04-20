@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QString>
 
+#include <filesystem>
 #include <optional>
 
 class QWidget;
@@ -25,13 +26,13 @@ struct FileDialogOptions {
 };
 
 /// Modal open-file dialog. Call from the GUI thread only.
-[[nodiscard]] std::optional<QString> open_file_dialog(
+[[nodiscard]] std::optional<std::filesystem::path> open_file_dialog(
     QWidget* parent = nullptr,
     const FileDialogOptions& opts = FileDialogOptions{}
 );
 
 /// Modal save-file dialog. Call from the GUI thread only.
-[[nodiscard]] std::optional<QString> save_file_dialog(
+[[nodiscard]] std::optional<std::filesystem::path> save_file_dialog(
     QWidget* parent = nullptr,
     const FileDialogOptions& opts = FileDialogOptions{}
 );

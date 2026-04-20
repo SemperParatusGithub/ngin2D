@@ -42,8 +42,14 @@ private:
 private:
     Editor* m_editor = nullptr;
     bool m_gl_initialized = false;
+    // Logical (device-independent) widget size. Drives the camera's
+    // projection so world units are consistent across DPR.
     ngin::u32 m_viewport_width = 1;
     ngin::u32 m_viewport_height = 1;
+    // Physical framebuffer size in pixels (= logical * devicePixelRatio).
+    // Drives `glViewport`, which must match the actual framebuffer.
+    ngin::u32 m_framebuffer_width = 1;
+    ngin::u32 m_framebuffer_height = 1;
 
     ngin::ref<ngin::Camera> m_camera;
 

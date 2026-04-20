@@ -52,6 +52,17 @@ set(ENTT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set(ENTT_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(entt)
 
+set(NLOHMANN_JSON_FETCH_VERSION "v3.12.0" CACHE STRING "nlohmann/json release tag for FetchContent")
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG ${NLOHMANN_JSON_FETCH_VERSION}
+    GIT_SHALLOW TRUE
+)
+set(JSON_BuildTests OFF CACHE BOOL "" FORCE)
+set(JSON_Install OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(nlohmann_json)
+
 add_library(glad STATIC
     third_party/glad/src/glad.c
     third_party/glad/include/glad/glad.h
@@ -68,6 +79,8 @@ add_library(engine STATIC
     src/event_queue.cpp
     src/scene/scene.h
     src/scene/scene.cpp
+    src/scene/scene_serializer.h
+    src/scene/scene_serializer.cpp
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h
@@ -99,6 +112,10 @@ add_library(engine STATIC
     src/graphics/graphics_pipeline.cpp
     src/graphics/camera.h
     src/graphics/camera.cpp
+    src/project/project.h
+    src/project/project.cpp
+    src/project/project_serializer.h
+    src/project/project_serializer.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h
@@ -111,13 +128,15 @@ add_library(engine STATIC
     src/core/log.cpp
     src/core/assert.h
     src/core/core.h
+    src/core/filesystem.h
+    src/core/filesystem.cpp
 )
 
 target_include_directories(engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog)
+target_link_libraries(engine PRIVATE glfw glad spdlog::spdlog nlohmann_json::nlohmann_json)
 target_link_libraries(engine PUBLIC glm::glm EnTT::EnTT)
 target_compile_definitions(engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
@@ -140,6 +159,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event_queue.cpp
     src/scene/scene.h
     src/scene/scene.cpp
+    src/scene/scene_serializer.h
+    src/scene/scene_serializer.cpp
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h
@@ -171,6 +192,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/graphics/graphics_pipeline.cpp
     src/graphics/camera.h
     src/graphics/camera.cpp
+    src/project/project.h
+    src/project/project.cpp
+    src/project/project_serializer.h
+    src/project/project_serializer.cpp
     src/transform.h
     src/transform.cpp
     src/key_codes.h
@@ -183,6 +208,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/core/log.cpp
     src/core/assert.h
     src/core/core.h
+    src/core/filesystem.h
+    src/core/filesystem.cpp
     third_party/glad/src/glad.c
     third_party/glad/include/glad/glad.h
     third_party/glad/include/KHR/khrplatform.h

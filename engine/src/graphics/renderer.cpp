@@ -1,5 +1,6 @@
 #include "graphics/renderer.h"
 
+#include "core/filesystem.h"
 #include "core/assert.h"
 #include "core/log.h"
 #include "graphics/framebuffer.h"
@@ -94,14 +95,17 @@ void Renderer::initialize() {
         quad_layout
     );
 
+
+    const std::filesystem::path asset_root = Filesystem::get_executable_dir();
+
     s_render_data->quad_shader = create_ref<Shader>();
-    if (!s_render_data->quad_shader->load_from_files(k_quad_vert, k_quad_frag)
+    if (!s_render_data->quad_shader->load_from_files(asset_root / k_quad_vert, asset_root / k_quad_frag)
         || !s_render_data->quad_shader->is_valid()) {
         NGIN_ERROR("Renderer: failed to load quad shader");
     }
 
     s_render_data->circle_shader = create_ref<Shader>();
-    if (!s_render_data->circle_shader->load_from_files(k_circle_vert, k_circle_frag)
+    if (!s_render_data->circle_shader->load_from_files(asset_root / k_circle_vert, asset_root / k_circle_frag)
         || !s_render_data->circle_shader->is_valid()) {
         NGIN_ERROR("Renderer: failed to load circle shader");
     }

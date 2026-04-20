@@ -1,4 +1,5 @@
 #include "file_dialog.h"
+#include "qt_path_utils.h"
 
 #include <QApplication>
 #include <QDir>
@@ -59,7 +60,7 @@ QString maybe_apply_default_suffix(const QString& path, const QString& default_s
 
 } // namespace
 
-std::optional<QString> open_file_dialog(QWidget* parent, const FileDialogOptions& opts) {
+std::optional<std::filesystem::path> open_file_dialog(QWidget* parent, const FileDialogOptions& opts) {
     QWidget* const p = effective_parent(parent);
     const QString caption =
         opts.title.isEmpty() ? QStringLiteral("Open File") : opts.title;
@@ -74,10 +75,10 @@ std::optional<QString> open_file_dialog(QWidget* parent, const FileDialogOptions
     if (path.isEmpty()) {
         return std::nullopt;
     }
-    return path;
+    return qstring_to_path(path);
 }
 
-std::optional<QString> save_file_dialog(QWidget* parent, const FileDialogOptions& opts) {
+std::optional<std::filesystem::path> save_file_dialog(QWidget* parent, const FileDialogOptions& opts) {
     QWidget* const p = effective_parent(parent);
     const QString caption =
         opts.title.isEmpty() ? QStringLiteral("Save File") : opts.title;
@@ -94,7 +95,7 @@ std::optional<QString> save_file_dialog(QWidget* parent, const FileDialogOptions
         return std::nullopt;
     }
     path = maybe_apply_default_suffix(path, opts.default_suffix);
-    return path;
+    return qstring_to_path(path);
 }
 
 } // namespace ngin::editor
