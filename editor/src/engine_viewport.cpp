@@ -42,6 +42,12 @@ void EngineViewport::on_create() {
     m_viewport_width = static_cast<ngin::u32>(std::max(1, width()));
     m_viewport_height = static_cast<ngin::u32>(std::max(1, height()));
 
+    const qreal dpr = devicePixelRatioF();
+    m_framebuffer_width = static_cast<ngin::u32>(
+        std::max<long>(1, std::lround(static_cast<qreal>(m_viewport_width) * dpr)));
+    m_framebuffer_height = static_cast<ngin::u32>(
+        std::max<long>(1, std::lround(static_cast<qreal>(m_viewport_height) * dpr)));
+
     ngin::Renderer::initialize();
 
     m_camera = ngin::create_ref<ngin::Camera>(
@@ -53,11 +59,14 @@ void EngineViewport::on_create() {
         )
     );
     ngin::Renderer::set_camera(m_camera);
+    // `glViewport` must match the real framebuffer, which is DPR-scaled.
+    // The camera, by contrast, is driven by the logical size so that world
+    // units stay consistent across regular and Retina displays.
     ngin::Renderer::set_viewport(
         0.0f,
         0.0f,
-        static_cast<ngin::f32>(m_viewport_width),
-        static_cast<ngin::f32>(m_viewport_height)
+        static_cast<ngin::f32>(m_framebuffer_width),
+        static_cast<ngin::f32>(m_framebuffer_height)
     );
 
     m_gl_initialized = true;
@@ -129,8 +138,8 @@ void EngineViewport::on_render() {
     ngin::Renderer::set_viewport(
         0.0f,
         0.0f,
-        static_cast<ngin::f32>(m_viewport_width),
-        static_cast<ngin::f32>(m_viewport_height)
+        static_cast<ngin::f32>(m_framebuffer_width),
+        static_cast<ngin::f32>(m_framebuffer_height)
     );
     ngin::Renderer::set_camera(m_camera);
     ngin::Renderer::set_clear_color({0.12f, 0.13f, 0.18f, 1.0f});
@@ -158,8 +167,18 @@ void EngineViewport::resizeGL(int w, int h) {
         return;
     }
 
+    // Qt 6 invokes resizeGL with the widget's *logical* (device-independent)
+    // size — same units as `width()` / `height()`. The backing framebuffer is
+    // DPR-scaled, so compute that explicitly for the `glViewport` call.
     m_viewport_width = static_cast<ngin::u32>(w);
     m_viewport_height = static_cast<ngin::u32>(h);
+
+    const qreal dpr = devicePixelRatioF();
+    m_framebuffer_width = static_cast<ngin::u32>(
+        std::max<long>(1, std::lround(static_cast<qreal>(w) * dpr)));
+    m_framebuffer_height = static_cast<ngin::u32>(
+        std::max<long>(1, std::lround(static_cast<qreal>(h) * dpr)));
+
     if (m_camera) {
         m_camera->set_viewport(m_viewport_width, m_viewport_height);
     }

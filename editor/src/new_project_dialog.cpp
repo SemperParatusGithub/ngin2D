@@ -188,7 +188,23 @@ void NewProjectDialog::on_create() {
     ngin::Project project(display_name.toStdString());
     project.set_root_directory(ngin::editor::qstring_to_path(folder_path));
     project.set_relative_asset_directory(ngin::editor::qstring_to_path(rel_assets));
+    project.set_relative_scenes_directory(std::filesystem::path{ "scenes" });
     project.set_relative_default_scene(std::filesystem::path());
+
+    // Create the scenes/ folder on disk so the on-disk project layout matches
+    // what ProjectSerializer just wrote into the .nginproject file. Saving a
+    // scene into this folder is what the File > Save action will rely on.
+    std::error_code ec;
+    std::filesystem::create_directories(project.get_scenes_directory(), ec);
+    if (ec) {
+        QMessageBox::warning(
+            this,
+            tr("New project"),
+            tr("Could not create the scenes folder:\n%1\n%2")
+                .arg(QString::fromStdString(project.get_scenes_directory().string()),
+                     QString::fromStdString(ec.message())));
+        return;
+    }
 
     if (!ngin::ProjectSerializer::serialize(project, ngin::editor::qstring_to_path(file_path))) {
         QMessageBox::warning(this, tr("New project"), tr("Failed to write the project file."));

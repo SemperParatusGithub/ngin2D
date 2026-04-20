@@ -21,7 +21,10 @@ public:
 
 	Entity create_entity();
 	Entity create_entity(std::string_view tag);
+	Entity create_entity_with_id(internal_entity_id id, std::string_view tag);
 	void destroy_entity(Entity entity);
+
+	void clear();
 
 private:
 	entt::registry m_registry;

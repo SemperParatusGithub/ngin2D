@@ -79,6 +79,8 @@ add_library(engine STATIC
     src/event_queue.cpp
     src/scene/scene.h
     src/scene/scene.cpp
+    src/scene/scene_serializer.h
+    src/scene/scene_serializer.cpp
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h
@@ -157,6 +159,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/event_queue.cpp
     src/scene/scene.h
     src/scene/scene.cpp
+    src/scene/scene_serializer.h
+    src/scene/scene_serializer.cpp
     src/scene/entity.h
     src/scene/entity.cpp
     src/scene/components/components.h

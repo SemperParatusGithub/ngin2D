@@ -19,6 +19,8 @@ add_executable(editor
     src/hierarchy_panel.h
     src/inspector_panel.cpp
     src/inspector_panel.h
+    src/project_panel.cpp
+    src/project_panel.h
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp
@@ -84,6 +86,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
     src/hierarchy_panel.h
     src/inspector_panel.cpp
     src/inspector_panel.h
+    src/project_panel.cpp
+    src/project_panel.h
     src/engine_viewport.cpp
     src/engine_viewport.h
     src/opengl_context_qt.cpp
